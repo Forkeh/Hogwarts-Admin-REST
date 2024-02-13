@@ -1,9 +1,6 @@
 package eduhogwarts.hogwartsadmin.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -14,8 +11,10 @@ public class House {
     private int id;
     private String name;
     private String founder;
-    private List<String> colors;
+    private @ElementCollection
+    List<String> colors;
 
+    // Constructors
     public House() {
     }
 
@@ -25,6 +24,7 @@ public class House {
         this.colors = colors;
     }
 
+    // Getters and Setters
     public int getId() {
         return id;
     }

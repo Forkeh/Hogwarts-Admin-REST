@@ -1,9 +1,6 @@
 package eduhogwarts.hogwartsadmin.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -16,12 +13,13 @@ public class Teacher {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private House house;
+    @ManyToOne private House house;
     boolean headOfHouse;
     EmpType employment;
     LocalDate employmentStart;
     LocalDate employmentEnd;
 
+    // Constructors
     public Teacher() {
     }
 
@@ -37,6 +35,7 @@ public class Teacher {
         this.employmentEnd = employmentEnd;
     }
 
+    // Getters and Setters
     public int getId() {
         return id;
     }
