@@ -36,6 +36,10 @@ public class Student {
         this.graduated = graduated;
     }
 
+    public Student(String firstName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+        this(firstName, null, lastName, dateOfBirth, house, prefect, enrollmentYear, graduationYear, graduated);
+    }
+
     // Getters and Setters
     public int getId() {
         return id;
