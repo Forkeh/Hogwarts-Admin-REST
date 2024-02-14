@@ -13,7 +13,7 @@ public class Teacher {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    @ManyToOne private House house;
+    private @ManyToOne(fetch = FetchType.EAGER) House house;
     boolean headOfHouse;
     EmpType employment;
     LocalDate employmentStart;

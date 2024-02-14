@@ -14,7 +14,7 @@ public class Student {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private @ManyToOne House house;
+    private @ManyToOne(fetch = FetchType.EAGER) House house;
     private boolean prefect;
     private int enrollmentYear;
     private int graduationYear;
