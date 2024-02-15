@@ -2,7 +2,6 @@ package eduhogwarts.hogwartsadmin.models;
 
 
 import jakarta.persistence.*;
-import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class Course {
         return teacher;
     }
 
-    public void setTeacher(@NonNull Teacher teacher) {
+    public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
 
@@ -84,6 +83,14 @@ public class Course {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public void addStudent(Student student) {
+        this.students.add(student);
+    }
+
+    public void removeStudent(Student student) {
+        this.students.remove(student);
     }
 
     @Override
