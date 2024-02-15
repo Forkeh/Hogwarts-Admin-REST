@@ -2,6 +2,7 @@ package eduhogwarts.hogwartsadmin.controllers;
 
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,26 +40,18 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable int id, @RequestBody Teacher teacher) {
+    public ResponseEntity<Teacher> updateTeacher(@PathVariable int id, @RequestBody Teacher updatedTeacher) {
         Optional<Teacher> original = teacherRepository.findById(id);
 
-        if(original.isPresent()) {
-        // Update original teacher
-        Teacher originalTeacher = original.get();
-        originalTeacher.setFirstName(teacher.getFirstName());
-        originalTeacher.setMiddleName(teacher.getMiddleName());
-        originalTeacher.setLastName(teacher.getLastName());
-        originalTeacher.setDateOfBirth(teacher.getDateOfBirth());
-        originalTeacher.setHouse(teacher.getHouse());
-        originalTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
-        originalTeacher.setEmployment(teacher.getEmployment());
-        originalTeacher.setEmploymentStart(teacher.getEmploymentStart());
-        originalTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
+        if (original.isPresent()) {
+            // Update original teacher
+            Teacher existingTeacher = original.get();
+            BeanUtils.copyProperties(updatedTeacher, existingTeacher, "id");
 
-        // Save updated teacher
-        Teacher updatedTeacher = teacherRepository.save(originalTeacher);
+            // Save updated teacher
+            Teacher savedTeacher = teacherRepository.save(existingTeacher);
 
-        return ResponseEntity.ok().body(updatedTeacher);
+            return ResponseEntity.ok().body(savedTeacher);
 
         } else {
 
