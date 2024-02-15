@@ -1,9 +1,12 @@
 package eduhogwarts.hogwartsadmin.data;
 
+import eduhogwarts.hogwartsadmin.models.EmpType;
 import eduhogwarts.hogwartsadmin.models.House;
 import eduhogwarts.hogwartsadmin.models.Student;
+import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
+import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,10 @@ public class InitData {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private TeacherRepository teacherRepository;
+
     @Autowired
     private HouseRepository houseRepository;
 
@@ -51,5 +58,16 @@ public class InitData {
         students.add(new Student("Vincent", "Crabbe", LocalDate.of(1980, Month.JANUARY, 1), slytherin, false, 1991, 1998, false));
         studentRepository.saveAll(students);
 
+        // Create and save students to database
+        List<Teacher> teachers = new ArrayList<>();
+
+        teachers.add(new Teacher("Severus", "Snape", LocalDate.of(1960, Month.JANUARY, 9), slytherin, true, EmpType.TENURED, LocalDate.of(1981, Month.JANUARY, 1), LocalDate.of(1998, Month.MAY, 2)));
+        teachers.add(new Teacher("Minerva", "McGonagall", LocalDate.of(1935, Month.OCTOBER, 4), gryffindor, true, EmpType.TENURED, LocalDate.of(1956, Month.JULY, 12), null));
+        teachers.add(new Teacher("Filius", "Flitwick", LocalDate.of(1958, Month.OCTOBER, 17), ravenclaw, false, EmpType.TEMPORARY, LocalDate.of(1975, Month.SEPTEMBER, 1), LocalDate.of(1998, Month.MAY, 2)));
+        teachers.add(new Teacher("Pomona", "Sprout", LocalDate.of(1950, Month.MAY, 15), hufflepuff, true, EmpType.TENURED, LocalDate.of(1974, Month.SEPTEMBER, 1), null));
+        teachers.add(new Teacher("Sybill", "Trelawney", LocalDate.of(1959, Month.MARCH, 9), ravenclaw, false, EmpType.TEMPORARY, LocalDate.of(1979, Month.SEPTEMBER, 1), LocalDate.of(1998, Month.MAY, 2)));
+        teachers.add(new Teacher("Quirinus", "Quirrell", LocalDate.of(1965, Month.MAY, 26), slytherin, false, EmpType.TEMPORARY, LocalDate.of(1990, Month.SEPTEMBER, 1), LocalDate.of(1991, Month.JUNE, 25)));
+
+        teacherRepository.saveAll(teachers);
     }
 }

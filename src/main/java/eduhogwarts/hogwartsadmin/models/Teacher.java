@@ -35,6 +35,10 @@ public class Teacher {
         this.employmentEnd = employmentEnd;
     }
 
+    public Teacher(String firstName, String lastName, LocalDate dateOfBirth, House house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
+        this(firstName, null, lastName, dateOfBirth, house, headOfHouse, employment, employmentStart, employmentEnd);
+    }
+
     // Getters and Setters
     public int getId() {
         return id;
