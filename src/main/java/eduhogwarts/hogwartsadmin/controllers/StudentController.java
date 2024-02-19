@@ -1,5 +1,6 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
+import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/students")
@@ -19,16 +21,18 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getAllStudents() {
+    public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        return students;
+        return students.stream().
+                map(this::fromModelToDTO).
+                collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable int id) {
-        Optional<Student> student = studentRepository.findById(id);
-
-        return ResponseEntity.of(student);
+    public ResponseEntity<StudentDTO> getStudent(@PathVariable int id) {
+        return studentRepository.findById(id).
+                map(student -> ResponseEntity.ok().body(fromModelToDTO(student))).
+                orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -70,5 +74,9 @@ public class StudentController {
         studentRepository.deleteById(id);
 
         return ResponseEntity.of(student);
+    }
+
+    public StudentDTO fromModelToDTO(Student student) {
+        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getHouse().getName());
     }
 }

@@ -1,6 +1,8 @@
 package eduhogwarts.hogwartsadmin.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -15,7 +17,10 @@ public class Student {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private @ManyToOne(fetch = FetchType.EAGER) House house;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "name")
+    private House house;
     private boolean prefect;
     private int enrollmentYear;
     private int graduationYear;
