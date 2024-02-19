@@ -4,6 +4,7 @@ import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
+import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,11 @@ import java.util.Optional;
 public class CourseController {
 
     private final CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
 
-    public CourseController(CourseRepository courseRepository) {
+    public CourseController(CourseRepository courseRepository, StudentRepository studentRepository) {
         this.courseRepository = courseRepository;
+        this.studentRepository = studentRepository;
     }
 
     @GetMapping
@@ -114,19 +117,21 @@ public class CourseController {
         }
     }
 
-    @PutMapping("/{id}/students")
-    public ResponseEntity<?> addCourseStudent(@RequestBody Student student, @PathVariable int id) {
+    @PutMapping("/{courseId}/students/{studentId}")
+    public ResponseEntity<?> addCourseStudent(@PathVariable int courseId, @PathVariable int studentId) {
         try {
-            Optional<Course> original = courseRepository.findById(id);
+            Optional<Course> originalCourse = courseRepository.findById(courseId);
+            Optional<Student> originalStudent = studentRepository.findById(studentId);
 
-            if (original.isPresent()) {
-                Course course = original.get();
+            if (originalCourse.isPresent() & originalStudent.isPresent()) {
+                Course course = originalCourse.get();
+                Student student = originalStudent.get();
+                // TODO: Check om student allerede er på course
                 course.addStudent(student);
                 return ResponseEntity.ok().body(course.getStudents());
             } else {
                 return ResponseEntity.notFound().build();
             }
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
         }
