@@ -75,6 +75,28 @@ public class Student {
         this.lastName = lastName;
     }
 
+    public void setFullName(String fullName) {
+        int firstSpace = fullName.indexOf(" ");
+        int lastSpace = fullName.lastIndexOf(" ");
+
+        String firstName = fullName.substring(0, firstSpace);
+        String lastName = fullName.substring(lastSpace + 1);
+
+        if (firstSpace != lastSpace) {
+            String middleName = fullName.substring(firstSpace + 1, lastSpace);
+            setMiddleName(middleName);
+        }
+
+        setFirstName(firstName);
+        setLastName(lastName);
+    }
+
+    public String getFullName() {
+        return this.getMiddleName() != null ?
+                getFirstName() + " " + getMiddleName() + " " + getMiddleName() :
+                getFirstName() + " " + getLastName();
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
