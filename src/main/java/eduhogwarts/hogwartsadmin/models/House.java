@@ -7,8 +7,6 @@ import java.util.List;
 @Entity(name = "house")
 public class House {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     private String name;
     private String founder;
     private @ElementCollection
@@ -25,8 +23,9 @@ public class House {
     }
 
     // Getters and Setters
-    public int getId() {
-        return id;
+
+    public String getName() {
+        return name;
     }
 
     public String getFounder() {
@@ -48,7 +47,6 @@ public class House {
     @Override
     public String toString() {
         return "House{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", founder='" + founder + '\'' +
                 ", colors=" + colors +
