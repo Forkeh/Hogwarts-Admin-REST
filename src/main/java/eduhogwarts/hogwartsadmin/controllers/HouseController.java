@@ -1,7 +1,6 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
 import eduhogwarts.hogwartsadmin.models.House;
-import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.services.HouseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
