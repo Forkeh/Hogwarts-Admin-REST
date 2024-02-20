@@ -48,7 +48,7 @@ public class InitData {
 
 
         // Create and save students to database
-        students.add(new Student("Harry", "James", "Potter", LocalDate.of(1980, Month.JULY, 31), gryffindor, false, 1991, 1998, false));
+        students.add(new Student("Harry James Potter", LocalDate.of(1980, Month.JULY, 31), gryffindor, false, 1991, 1998, false));
         students.add(new Student("Hermione", "Jean", "Granger", LocalDate.of(1979, Month.SEPTEMBER, 19), gryffindor, true, 1991, 1998, false));
         students.add(new Student("Ronald", "Bilius", "Weasley", LocalDate.of(1980, Month.MARCH, 1), gryffindor, false, 1991, 1998, false));
         students.add(new Student("Cedric", "Diggory", LocalDate.of(1977, Month.OCTOBER, 1), hufflepuff, true, 1990, 1997, true));

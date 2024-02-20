@@ -46,6 +46,16 @@ public class Student {
         this(firstName, null, lastName, dateOfBirth, house, prefect, enrollmentYear, graduationYear, graduated);
     }
 
+    public Student(String fullName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+        this.setFullName(fullName);
+        this.dateOfBirth = dateOfBirth;
+        this.house = house;
+        this.prefect = prefect;
+        this.enrollmentYear = enrollmentYear;
+        this.graduationYear = graduationYear;
+        this.graduated = graduated;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

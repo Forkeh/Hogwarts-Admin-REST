@@ -13,7 +13,9 @@ public class Teacher {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private @ManyToOne(fetch = FetchType.EAGER) House house;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "name")
+    private House house;
     boolean headOfHouse;
     EmpType employment;
     LocalDate employmentStart;
