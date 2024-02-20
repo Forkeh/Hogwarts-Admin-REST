@@ -18,13 +18,9 @@ import java.util.Optional;
 @RequestMapping("/courses")
 public class CourseController {
 
-    private final CourseRepository courseRepository;
-    private final StudentRepository studentRepository;
     private final CourseService courseService;
 
-    public CourseController(CourseRepository courseRepository, StudentRepository studentRepository, CourseService courseService) {
-        this.courseRepository = courseRepository;
-        this.studentRepository = studentRepository;
+    public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
 
