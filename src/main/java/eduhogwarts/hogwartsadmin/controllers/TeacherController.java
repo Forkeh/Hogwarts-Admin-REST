@@ -27,7 +27,7 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacher(@PathVariable int id) {
+    public ResponseEntity<Teacher> getTeacher(@PathVariable Long id) {
         Optional<Teacher> teacher = teacherRepository.findById(id);
 
         return ResponseEntity.of(teacher);
@@ -40,7 +40,7 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable int id, @RequestBody Teacher updatedTeacher) {
+    public ResponseEntity<Teacher> updateTeacher(@PathVariable Long id, @RequestBody Teacher updatedTeacher) {
         Optional<Teacher> original = teacherRepository.findById(id);
 
         if (original.isPresent()) {
@@ -60,7 +60,7 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Teacher> deleteTeacher(@PathVariable int id) {
+    public ResponseEntity<Teacher> deleteTeacher(@PathVariable Long id) {
 
         Optional<Teacher> deletedTeacher = teacherRepository.findById(id);
 

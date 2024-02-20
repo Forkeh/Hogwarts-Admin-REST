@@ -31,7 +31,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourse(@PathVariable int id) {
+    public ResponseEntity<Course> getCourse(@PathVariable Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
@@ -42,7 +42,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/teacher")
-    public ResponseEntity<Teacher> getCourseTeacher(@PathVariable int id) {
+    public ResponseEntity<Teacher> getCourseTeacher(@PathVariable Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
@@ -57,7 +57,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<Student>> getCourseStudents(@PathVariable int id) {
+    public ResponseEntity<List<Student>> getCourseStudents(@PathVariable Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
@@ -78,7 +78,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@RequestBody Course updatedCourse, @PathVariable int id) {
+    public ResponseEntity<?> updateCourse(@RequestBody Course updatedCourse, @PathVariable Long id) {
         try {
             Optional<Course> original = courseRepository.findById(id);
 
@@ -99,7 +99,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}/teacher")
-    public ResponseEntity<?> updateCourseTeacher(@RequestBody Teacher teacher, @PathVariable int id) {
+    public ResponseEntity<?> updateCourseTeacher(@RequestBody Teacher teacher, @PathVariable Long id) {
         try {
             Optional<Course> original = courseRepository.findById(id);
 
@@ -118,7 +118,7 @@ public class CourseController {
     }
 
     @PutMapping("/{courseId}/students/{studentId}")
-    public ResponseEntity<?> addCourseStudent(@PathVariable int courseId, @PathVariable int studentId) {
+    public ResponseEntity<?> addCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
         try {
             Optional<Course> originalCourse = courseRepository.findById(courseId);
             Optional<Student> originalStudent = studentRepository.findById(studentId);
@@ -138,7 +138,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable int id) {
+    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
         try {
             Optional<Course> original = courseRepository.findById(id);
 
@@ -157,7 +157,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}/teacher")
-    public ResponseEntity<?> deleteCourseTeacher(@PathVariable int id) {
+    public ResponseEntity<?> deleteCourseTeacher(@PathVariable Long id) {
         try {
             Optional<Course> original = courseRepository.findById(id);
 
@@ -177,7 +177,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{courseId}/students/{studentId}")
-    public ResponseEntity<?> deleteCourseStudent(@PathVariable int courseId, @PathVariable int studentId) {
+    public ResponseEntity<?> deleteCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
         try {
             Optional<Course> originalCourse = courseRepository.findById(courseId);
 

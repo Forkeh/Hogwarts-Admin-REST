@@ -1,7 +1,7 @@
 package eduhogwarts.hogwartsadmin.dto;
 
 public class StudentDTO {
-    private int id;
+    private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -10,7 +10,7 @@ public class StudentDTO {
     public StudentDTO() {
     }
 
-    public StudentDTO(int id, String firstName, String middleName, String lastName, String house) {
+    public StudentDTO(Long id, String firstName, String middleName, String lastName, String house) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -18,12 +18,8 @@ public class StudentDTO {
         this.house = house;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFirstName() {

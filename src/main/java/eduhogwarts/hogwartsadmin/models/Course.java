@@ -9,7 +9,7 @@ import java.util.List;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String subject;
     private int schoolYear;
     private boolean current;
@@ -41,7 +41,7 @@ public class Course {
         this(subject, schoolYear, current, null, null);
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

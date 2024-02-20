@@ -29,7 +29,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDTO> getStudent(@PathVariable int id) {
+    public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id) {
         return studentRepository.findById(id).
                 map(student -> ResponseEntity.ok().body(fromModelToDTO(student))).
                 orElseGet(() -> ResponseEntity.notFound().build());
@@ -42,7 +42,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student) {
+    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
         Optional<Student> original = studentRepository.findById(id);
 
         if (original.isPresent()) {
@@ -68,7 +68,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable int id) {
+    public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         Optional<Student> student = studentRepository.findById(id);
 
         studentRepository.deleteById(id);
