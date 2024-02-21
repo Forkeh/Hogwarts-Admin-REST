@@ -1,5 +1,6 @@
 package eduhogwarts.hogwartsadmin.services;
 
+import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
@@ -20,12 +22,16 @@ public class TeacherService {
         this.courseRepository = courseRepository;
     }
 
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
+    public List<TeacherDTO> getAllTeachers() {
+        return teacherRepository.findAll().
+                stream().map(this::fromModelToDTO).
+                collect(Collectors.toList());
     }
 
-    public Teacher getTeacherById(Long id) {
-        return teacherRepository.findById(id).orElse(null);
+    public TeacherDTO getTeacherById(Long id) {
+        return teacherRepository.findById(id).
+                map(this::fromModelToDTO).
+                orElse(null);
     }
 
     public Teacher createTeacher(Teacher teacher) {
@@ -60,5 +66,9 @@ public class TeacherService {
         } else {
             return null;
         }
+    }
+
+    private TeacherDTO fromModelToDTO(Teacher teacher) {
+        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getHouse().getName());
     }
 }

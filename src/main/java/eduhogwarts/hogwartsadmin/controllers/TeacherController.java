@@ -1,5 +1,6 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
+import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import eduhogwarts.hogwartsadmin.services.TeacherService;
@@ -14,23 +15,21 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {
-    private final TeacherRepository teacherRepository;
     private final TeacherService teacherService;
 
-    public TeacherController(TeacherRepository teacherRepository, TeacherService teacherService) {
-        this.teacherRepository = teacherRepository;
+    public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
     }
 
     @GetMapping
-    public List<Teacher> getAllTeachers() {
+    public List<TeacherDTO> getAllTeachers() {
         return teacherService.getAllTeachers();
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacher(@PathVariable Long id) {
-        Teacher teacher = teacherService.getTeacherById(id);
+    public ResponseEntity<TeacherDTO> getTeacher(@PathVariable Long id) {
+        TeacherDTO teacher = teacherService.getTeacherById(id);
 
         if (teacher != null) {
             return ResponseEntity.ok().body(teacher);
