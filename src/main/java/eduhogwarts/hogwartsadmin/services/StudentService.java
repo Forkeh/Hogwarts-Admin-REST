@@ -8,8 +8,11 @@ import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -106,8 +109,31 @@ public class StudentService {
         }
     }
 
+    public StudentDTO patchStudentFields(Long id, Map<String, Object> fields) {
+        Optional<Student> student = studentRepository.findById(id);
+
+        if (student.isPresent()) {
+            // Loop through all fields
+            fields.forEach((key, value) -> {
+                // Use reflection to get field from student and set it to the new value
+                Field field = ReflectionUtils.findField(Student.class, key);
+
+                if (field != null) {
+                    field.setAccessible(true);
+                    ReflectionUtils.setField(field, student.get(), value);
+                    field.setAccessible(false);
+                }
+            });
+            studentRepository.save(student.get());
+            return fromModelToDTO(student.get());
+        } else {
+            return null;
+        }
+    }
+
     private StudentDTO fromModelToDTO(Student student) {
         return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getFullName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
     }
+
 }
 

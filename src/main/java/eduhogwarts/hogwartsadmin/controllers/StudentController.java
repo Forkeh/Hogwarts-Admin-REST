@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -65,6 +66,17 @@ public class StudentController {
 
         if (deletedStudent != null) {
             return ResponseEntity.ok().body(deletedStudent);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<StudentDTO> patchStudentFields(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+        StudentDTO patchedStudent = studentService.patchStudentFields(id, fields);
+
+        if (patchedStudent != null) {
+            return ResponseEntity.ok().body(patchedStudent);
         } else {
             return ResponseEntity.notFound().build();
         }
