@@ -4,6 +4,7 @@ package eduhogwarts.hogwartsadmin.models;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "course")
 public class Course {
@@ -16,12 +17,12 @@ public class Course {
     @ManyToOne
     private Teacher teacher;
     @ManyToMany
-    private List<Student> students;
+    private Set<Student> students;
 
     public Course() {
     }
 
-    public Course(String subject, int schoolYear, boolean current, Teacher teacher, List<Student> students) {
+    public Course(String subject, int schoolYear, boolean current, Teacher teacher, Set<Student> students) {
         this.subject = subject;
         this.schoolYear = schoolYear;
         this.current = current;
@@ -29,7 +30,7 @@ public class Course {
         this.students = students;
     }
 
-    public Course(String subject, int schoolYear, boolean current, List<Student> students) {
+    public Course(String subject, int schoolYear, boolean current, Set<Student> students) {
         this(subject, schoolYear, current, null, students);
     }
 
@@ -77,11 +78,11 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public List<Student> getStudents() {
+    public Set<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(List<Student> students) {
+    public void setStudents(Set<Student> students) {
         this.students = students;
     }
 

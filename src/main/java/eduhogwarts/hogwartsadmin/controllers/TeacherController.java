@@ -2,7 +2,6 @@ package eduhogwarts.hogwartsadmin.controllers;
 
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.EmpType;
-import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.services.TeacherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

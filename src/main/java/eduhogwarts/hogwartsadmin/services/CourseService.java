@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CourseService {
@@ -41,7 +42,7 @@ public class CourseService {
         }
     }
 
-    public List<Student> getCourseStudents(Long id) {
+    public Set<Student> getCourseStudents(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
@@ -89,7 +90,7 @@ public class CourseService {
         }
     }
 
-    public List<Student> addCourseStudent(Long courseId, Long studentId) {
+    public Set<Student> addCourseStudent(Long courseId, Long studentId) {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 
@@ -138,7 +139,7 @@ public class CourseService {
         }
     }
 
-    public List<Student> deleteCourseStudent(Long courseId, Long studentId) {
+    public Set<Student> deleteCourseStudent(Long courseId, Long studentId) {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 

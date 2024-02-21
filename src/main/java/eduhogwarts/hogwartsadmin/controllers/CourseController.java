@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/courses")
@@ -53,8 +54,8 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<Student>> getCourseStudents(@PathVariable Long id) {
-        List<Student> students = courseService.getCourseStudents(id);
+    public ResponseEntity<Set<Student>> getCourseStudents(@PathVariable Long id) {
+        Set<Student> students = courseService.getCourseStudents(id);
 
         if (students != null) {
             return ResponseEntity.ok(students);
@@ -103,7 +104,7 @@ public class CourseController {
     @PutMapping("/{courseId}/students/{studentId}")
     public ResponseEntity<?> addCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
         try {
-            List<Student> students = courseService.addCourseStudent(courseId, studentId);
+            Set<Student> students = courseService.addCourseStudent(courseId, studentId);
 
             if (students != null) {
                 return ResponseEntity.ok().body(students);
@@ -148,7 +149,7 @@ public class CourseController {
     @DeleteMapping("/{courseId}/students/{studentId}")
     public ResponseEntity<?> deleteCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
         try {
-            List<Student> students = courseService.deleteCourseStudent(courseId, studentId);
+            Set<Student> students = courseService.deleteCourseStudent(courseId, studentId);
 
             if (students != null) {
                 return ResponseEntity.ok().body(students);

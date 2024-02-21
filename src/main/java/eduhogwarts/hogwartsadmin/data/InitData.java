@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class InitData {
@@ -72,12 +70,12 @@ public class InitData {
 
         // Create and save courses to database
         courses = Arrays.asList(
-                new Course("Potions", 1, true, teachers.get(0), students.subList(0, 3)),
-                new Course("Transfiguration", 1, true, teachers.get(1), students.subList(3, 5)),
-                new Course("Charms", 1, true, teachers.get(2), students.subList(5, 7)),
-                new Course("Herbology", 1, true, teachers.get(3), students.subList(7, 9)),
-                new Course("Divination", 1, true, Arrays.asList(students.get(9))),
-                new Course("Defense Against the Dark Arts", 1, true, teachers.get(5))
+                new Course("Potions", 1, true, teachers.get(0), new HashSet<>(students.subList(0, 3))),
+                new Course("Transfiguration", 1, true, teachers.get(1), new HashSet<>(students.subList(3, 5))),
+                new Course("Charms", 1, true, teachers.get(2), new HashSet<>(students.subList(5, 7))),
+                new Course("Herbology", 1, true, teachers.get(3), new HashSet<>(students.subList(7, 9))),
+                new Course("Divination", 1, true, new HashSet<>(students.subList(7, 9))),
+                new Course("Defense Against the Dark Arts", 1, true, new HashSet<>(students.subList(8, 11)))
         );
         courseRepository.saveAll(courses);
     }
