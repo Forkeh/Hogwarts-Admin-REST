@@ -1,22 +1,39 @@
 package eduhogwarts.hogwartsadmin.dto;
 
+import eduhogwarts.hogwartsadmin.models.House;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+import java.time.LocalDate;
+
 public class StudentDTO {
     private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
+    private LocalDate dateOfBirth;
     private String house;
+    private boolean prefect;
+    private int enrollmentYear;
+    private int graduationYear;
+    private boolean graduated;
     private int schoolYear;
 
     public StudentDTO() {
     }
 
-    public StudentDTO(Long id, String firstName, String middleName, String lastName, String house, int schoolYear) {
+    public StudentDTO(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
         this.house = house;
+        this.prefect = prefect;
+        this.enrollmentYear = enrollmentYear;
+        this.graduationYear = graduationYear;
+        this.graduated = graduated;
         this.schoolYear = schoolYear;
     }
 
@@ -48,6 +65,14 @@ public class StudentDTO {
         this.lastName = lastName;
     }
 
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public String getHouse() {
         return house;
     }
@@ -56,6 +81,37 @@ public class StudentDTO {
         this.house = house;
     }
 
+    public boolean isPrefect() {
+        return prefect;
+    }
+
+    public void setPrefect(boolean prefect) {
+        this.prefect = prefect;
+    }
+
+    public int getEnrollmentYear() {
+        return enrollmentYear;
+    }
+
+    public void setEnrollmentYear(int enrollmentYear) {
+        this.enrollmentYear = enrollmentYear;
+    }
+
+    public int getGraduationYear() {
+        return graduationYear;
+    }
+
+    public void setGraduationYear(int graduationYear) {
+        this.graduationYear = graduationYear;
+    }
+
+    public boolean isGraduated() {
+        return graduated;
+    }
+
+    public void setGraduated(boolean graduated) {
+        this.graduated = graduated;
+    }
 
     public int getSchoolYear() {
         return schoolYear;

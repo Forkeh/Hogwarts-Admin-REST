@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface HouseRepository extends JpaRepository<House, String> {
     House findByNameContainingIgnoreCase(String name);
+
 }
 

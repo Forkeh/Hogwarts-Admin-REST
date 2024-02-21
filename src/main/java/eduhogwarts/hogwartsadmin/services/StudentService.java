@@ -2,8 +2,10 @@ package eduhogwarts.hogwartsadmin.services;
 
 import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
+import eduhogwarts.hogwartsadmin.models.House;
 import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
+import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,12 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final HouseRepository houseRepository;
 
-    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository) {
+    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, HouseRepository houseRepository) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
+        this.houseRepository = houseRepository;
     }
 
     public List<StudentDTO> getAllStudents() {
@@ -35,15 +39,24 @@ public class StudentService {
                 orElse(null);
     }
 
-    public Student createStudent(Student student) {
+    public StudentDTO createStudent(StudentDTO student) {
         // TODO: Create student where house field is a string?
-        return studentRepository.save(student);
+        House house = houseRepository.findByNameContainingIgnoreCase(student.getHouse());
+
+        if (house != null) {
+            Student newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getEnrollmentYear(), student.isGraduated(), student.getSchoolYear());
+            studentRepository.save(newStudent);
+            return fromModelToDTO(newStudent);
+        } else {
+            return null;
+        }
     }
 
-    public Student updateStudent(Long id, Student student) {
+    public StudentDTO updateStudent(Long id, StudentDTO student) {
         Optional<Student> original = studentRepository.findById(id);
+        House house = houseRepository.findByNameContainingIgnoreCase(student.getHouse());
 
-        if (original.isPresent()) {
+        if (original.isPresent() && house != null) {
             Student originalStudent = original.get();
 
             //Update original student
@@ -51,20 +64,23 @@ public class StudentService {
             originalStudent.setMiddleName(student.getMiddleName());
             originalStudent.setLastName(student.getLastName());
             originalStudent.setDateOfBirth(student.getDateOfBirth());
-            originalStudent.setHouse(student.getHouse());
+            originalStudent.setHouse(house);
             originalStudent.setPrefect(student.isPrefect());
             originalStudent.setEnrollmentYear(student.getEnrollmentYear());
             originalStudent.setGraduationYear(student.getGraduationYear());
             originalStudent.setGraduated(student.isGraduated());
+            originalStudent.setSchoolYear(student.getSchoolYear());
+
 
             // Save and return updated student
-            return studentRepository.save(originalStudent);
+            studentRepository.save(originalStudent);
+            return fromModelToDTO(originalStudent);
         } else {
             return null;
         }
     }
 
-    public Student deleteStudent(Long id) {
+    public StudentDTO deleteStudent(Long id) {
         Optional<Student> student = studentRepository.findById(id);
 
         if (student.isPresent()) {
@@ -80,14 +96,14 @@ public class StudentService {
 
             // Delete the student
             studentRepository.deleteById(id);
-            return studentToDelete;
+            return fromModelToDTO(studentToDelete);
         } else {
             return null;
         }
     }
 
     private StudentDTO fromModelToDTO(Student student) {
-        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getHouse().getName(), student.getSchoolYear());
+        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
     }
 }
 

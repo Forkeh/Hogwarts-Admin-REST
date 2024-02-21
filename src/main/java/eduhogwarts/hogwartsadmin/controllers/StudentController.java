@@ -37,14 +37,20 @@ public class StudentController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    public ResponseEntity<StudentDTO> createStudent(@RequestBody StudentDTO student) {
+
+        StudentDTO createdStudent = studentService.createStudent(student);
+
+        if (createdStudent != null) {
+            return ResponseEntity.ok().body(createdStudent);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        Student updateStudent = studentService.updateStudent(id, student);
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id, @RequestBody StudentDTO student) {
+        StudentDTO updateStudent = studentService.updateStudent(id, student);
 
         if (updateStudent != null) {
             return ResponseEntity.ok().body(updateStudent);
@@ -54,8 +60,8 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
-        Student deletedStudent = studentService.deleteStudent(id);
+    public ResponseEntity<StudentDTO> deleteStudent(@PathVariable Long id) {
+        StudentDTO deletedStudent = studentService.deleteStudent(id);
 
         if (deletedStudent != null) {
             return ResponseEntity.ok().body(deletedStudent);
