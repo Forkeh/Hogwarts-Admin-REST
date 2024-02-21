@@ -7,6 +7,7 @@ import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
+import eduhogwarts.hogwartsadmin.utils.ModelMapper;
 import eduhogwarts.hogwartsadmin.utils.Utilities;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -22,26 +23,27 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
-    private final HouseRepository houseRepository;
     private final Utilities utilities;
+    private final ModelMapper modelMapper;
 
-    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, HouseRepository houseRepository, Utilities utilities) {
+    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, Utilities utilities, ModelMapper modelMapper) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
-        this.houseRepository = houseRepository;
         this.utilities = utilities;
+        this.modelMapper = modelMapper;
     }
 
     public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return students.stream().
-                map(this::fromModelToDTO).
+                map(modelMapper::studentModelToDTO).
                 collect(Collectors.toList());
+
     }
 
     public StudentDTO getStudent(Long id) {
         return studentRepository.findById(id).
-                map(this::fromModelToDTO).
+                map(modelMapper::studentModelToDTO).
                 orElse(null);
     }
 
@@ -57,7 +59,7 @@ public class StudentService {
 //            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
 //        }
         studentRepository.save(newStudent);
-        return fromModelToDTO(newStudent);
+        return modelMapper.studentModelToDTO(newStudent);
 
     }
 
@@ -81,7 +83,7 @@ public class StudentService {
 
             // Save and return updated student
             studentRepository.save(originalStudent);
-            return fromModelToDTO(originalStudent);
+            return modelMapper.studentModelToDTO(originalStudent);
         } else {
             return null;
         }
@@ -103,7 +105,7 @@ public class StudentService {
 
             // Delete the student
             studentRepository.deleteById(id);
-            return fromModelToDTO(studentToDelete);
+            return modelMapper.studentModelToDTO(studentToDelete);
         } else {
             return null;
         }
@@ -132,7 +134,7 @@ public class StudentService {
                 }
             });
             studentRepository.save(student.get());
-            return fromModelToDTO(student.get());
+            return modelMapper.studentModelToDTO(student.get());
         } else {
             return null;
         }
