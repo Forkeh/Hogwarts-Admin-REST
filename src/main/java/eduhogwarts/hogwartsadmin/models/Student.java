@@ -98,7 +98,7 @@ public class Student {
 
     public String getFullName() {
         return this.getMiddleName() != null ?
-                getFirstName() + " " + getMiddleName() + " " + getMiddleName() :
+                getFirstName() + " " + getMiddleName() + " " + getLastName() :
                 getFirstName() + " " + getLastName();
     }
 

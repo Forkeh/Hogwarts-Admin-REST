@@ -1,10 +1,5 @@
 package eduhogwarts.hogwartsadmin.dto;
 
-import eduhogwarts.hogwartsadmin.models.House;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 import java.time.LocalDate;
 
 public class StudentDTO {

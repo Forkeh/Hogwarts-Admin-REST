@@ -1,5 +1,7 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.models.Teacher;
@@ -70,6 +72,12 @@ public class CourseController {
         return courseService.createCourse(course);
     }
 
+    @PostMapping("/{id}/students")
+    public Course addCourseStudents(@PathVariable Long id, @RequestBody List<Object> students) {
+
+        return courseService.addCourseStudents(id, students);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCourse(@RequestBody Course updatedCourse, @PathVariable Long id) {
         try {
@@ -86,7 +94,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}/teacher")
-    public ResponseEntity<?> updateCourseTeacher(@RequestBody Teacher teacher, @PathVariable Long id) {
+    public ResponseEntity<?> updateCourseTeacher(@RequestBody TeacherDTO teacher, @PathVariable Long id) {
         try {
             Course original = courseService.updateCourseTeacher(id, teacher);
 
