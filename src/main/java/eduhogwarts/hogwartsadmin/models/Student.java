@@ -25,12 +25,13 @@ public class Student {
     private int enrollmentYear;
     private int graduationYear;
     private boolean graduated;
+    private int schoolYear;
 
     // Constructors
     public Student() {
     }
 
-    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -40,20 +41,16 @@ public class Student {
         this.enrollmentYear = enrollmentYear;
         this.graduationYear = graduationYear;
         this.graduated = graduated;
+        this.schoolYear = schoolYear;
     }
 
-    public Student(String firstName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
-        this(firstName, null, lastName, dateOfBirth, house, prefect, enrollmentYear, graduationYear, graduated);
+    public Student(String firstName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
+        this(firstName, null, lastName, dateOfBirth, house, prefect, enrollmentYear, graduationYear, graduated, schoolYear);
     }
 
-    public Student(String fullName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+    public Student(String fullName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
+        this(null, null, null, dateOfBirth, house, prefect, enrollmentYear, graduationYear, graduated, schoolYear);
         this.setFullName(fullName);
-        this.dateOfBirth = dateOfBirth;
-        this.house = house;
-        this.prefect = prefect;
-        this.enrollmentYear = enrollmentYear;
-        this.graduationYear = graduationYear;
-        this.graduated = graduated;
     }
 
     // Getters and Setters
@@ -169,5 +166,13 @@ public class Student {
                 ", graduationYear=" + graduationYear +
                 ", graduated=" + graduated +
                 '}';
+    }
+
+    public int getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(int schoolYear) {
+        this.schoolYear = schoolYear;
     }
 }

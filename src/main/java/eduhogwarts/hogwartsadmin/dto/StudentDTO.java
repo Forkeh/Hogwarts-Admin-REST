@@ -6,16 +6,18 @@ public class StudentDTO {
     private String middleName;
     private String lastName;
     private String house;
+    private int schoolYear;
 
     public StudentDTO() {
     }
 
-    public StudentDTO(Long id, String firstName, String middleName, String lastName, String house) {
+    public StudentDTO(Long id, String firstName, String middleName, String lastName, String house, int schoolYear) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.house = house;
+        this.schoolYear = schoolYear;
     }
 
     public Long getId() {
@@ -55,4 +57,11 @@ public class StudentDTO {
     }
 
 
+    public int getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(int schoolYear) {
+        this.schoolYear = schoolYear;
+    }
 }

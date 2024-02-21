@@ -48,17 +48,17 @@ public class InitData {
 
 
         // Create and save students to database
-        students.add(new Student("Harry James Potter", LocalDate.of(1980, Month.JULY, 31), gryffindor, false, 1991, 1998, false));
-        students.add(new Student("Hermione", "Jean", "Granger", LocalDate.of(1979, Month.SEPTEMBER, 19), gryffindor, true, 1991, 1998, false));
-        students.add(new Student("Ronald", "Bilius", "Weasley", LocalDate.of(1980, Month.MARCH, 1), gryffindor, false, 1991, 1998, false));
-        students.add(new Student("Cedric", "Diggory", LocalDate.of(1977, Month.OCTOBER, 1), hufflepuff, true, 1990, 1997, true));
-        students.add(new Student("Nymphadora", "Tonks", LocalDate.of(1973, Month.DECEMBER, 28), hufflepuff, false, 1984, 1991, true));
-        students.add(new Student("Luna", "Lovegood", LocalDate.of(1981, Month.FEBRUARY, 13), ravenclaw, false, 1992, 1999, false));
-        students.add(new Student("Cho", "Chang", LocalDate.of(1979, Month.AUGUST, 2), ravenclaw, false, 1990, 1997, false));
-        students.add(new Student("Draco", "Lucius", "Malfoy", LocalDate.of(1980, Month.JUNE, 5), slytherin, false, 1991, 1998, false));
-        students.add(new Student("Severus", "Snape", LocalDate.of(1960, Month.JANUARY, 9), slytherin, true, 1971, 1978, true));
-        students.add(new Student("Ginny", "Molly", "Weasley", LocalDate.of(1981, Month.AUGUST, 11), gryffindor, false, 1992, 1999, false));
-        students.add(new Student("Vincent", "Crabbe", LocalDate.of(1980, Month.JANUARY, 1), slytherin, false, 1991, 1998, false));
+        students.add(new Student("Harry James Potter", LocalDate.of(1980, Month.JULY, 31), gryffindor, false, 1991, 1998, false, 1));
+        students.add(new Student("Hermione", "Jean", "Granger", LocalDate.of(1979, Month.SEPTEMBER, 19), gryffindor, true, 1991, 1998, false, 1));
+        students.add(new Student("Ronald", "Bilius", "Weasley", LocalDate.of(1980, Month.MARCH, 1), gryffindor, false, 1991, 1998, false, 1));
+        students.add(new Student("Cedric", "Diggory", LocalDate.of(1977, Month.OCTOBER, 1), hufflepuff, true, 1990, 1997, true, 1));
+        students.add(new Student("Nymphadora", "Tonks", LocalDate.of(1973, Month.DECEMBER, 28), hufflepuff, false, 1984, 1991, true, 2));
+        students.add(new Student("Luna", "Lovegood", LocalDate.of(1981, Month.FEBRUARY, 13), ravenclaw, false, 1992, 1999, false, 2));
+        students.add(new Student("Cho", "Chang", LocalDate.of(1979, Month.AUGUST, 2), ravenclaw, false, 1990, 1997, false, 3));
+        students.add(new Student("Draco", "Lucius", "Malfoy", LocalDate.of(1980, Month.JUNE, 5), slytherin, false, 1991, 1998, false, 4));
+        students.add(new Student("Severus", "Snape", LocalDate.of(1960, Month.JANUARY, 9), slytherin, true, 1971, 1978, true, 5));
+        students.add(new Student("Ginny", "Molly", "Weasley", LocalDate.of(1981, Month.AUGUST, 11), gryffindor, false, 1992, 1999, false, 5));
+        students.add(new Student("Vincent", "Crabbe", LocalDate.of(1980, Month.JANUARY, 1), slytherin, false, 1991, 1998, false, 6));
         studentRepository.saveAll(students);
 
         // Create and save students to database

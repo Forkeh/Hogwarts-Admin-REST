@@ -36,6 +36,7 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
+        // TODO: Create student where house field is a string?
         return studentRepository.save(student);
     }
 
@@ -86,7 +87,7 @@ public class StudentService {
     }
 
     private StudentDTO fromModelToDTO(Student student) {
-        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getHouse().getName());
+        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getHouse().getName(), student.getSchoolYear());
     }
 }
 
