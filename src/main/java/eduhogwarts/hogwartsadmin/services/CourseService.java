@@ -7,23 +7,26 @@ import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
+import eduhogwarts.hogwartsadmin.utils.Utilities;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-// TODO Make all students returns into DTOs
+// TODO Make all students/teacher returns into DTOs
 @Service
 public class CourseService {
 
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final Utilities utilities;
 
-    public CourseService(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
+    public CourseService(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, Utilities utilities) {
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
+        this.utilities = utilities;
     }
 
     public List<Course> getAllCourses() {
@@ -170,7 +173,7 @@ public class CourseService {
         // Loop through students info
         for (Object studentInfo : students) {
 
-            // Create a map from the student info
+            // Create a map from the student info (keys are "id" and/or "name")
             @SuppressWarnings("unchecked")
             Map<String, Object> studentMap = (Map<String, Object>) studentInfo;
 
@@ -185,7 +188,7 @@ public class CourseService {
 
                 // If the key is "name", split the name and find the student by first name and add them to the course
                 else if (key.equals("name")) {
-                    String[] nameParts = nameSplitter((String) studentMap.get(key));
+                    String[] nameParts = utilities.nameSplitter((String) studentMap.get(key));
                     Student student = studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(nameParts[0], nameParts[nameParts.length - 1]);
                     if (student != null) {
                         addCourseStudent(id, student.getId());
@@ -194,9 +197,5 @@ public class CourseService {
             }
         }
         return course.get();
-    }
-
-    private String[] nameSplitter(String name) {
-        return name.split(" ");
     }
 }

@@ -145,6 +145,7 @@ public class CourseController {
         }
     }
 
+    // TODO: Make into PUT instead of DELETE (changeCourseTeacher)
     @DeleteMapping("/{id}/teacher")
     public ResponseEntity<?> deleteCourseTeacher(@PathVariable Long id) {
         try {

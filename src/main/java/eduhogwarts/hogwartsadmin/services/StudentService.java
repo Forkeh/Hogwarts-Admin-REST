@@ -7,6 +7,7 @@ import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
+import eduhogwarts.hogwartsadmin.utils.Utilities;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -22,11 +23,13 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final HouseRepository houseRepository;
+    private final Utilities utilities;
 
-    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, HouseRepository houseRepository) {
+    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, HouseRepository houseRepository, Utilities utilities) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
         this.houseRepository = houseRepository;
+        this.utilities = utilities;
     }
 
     public List<StudentDTO> getAllStudents() {
@@ -43,17 +46,16 @@ public class StudentService {
     }
 
     public StudentDTO createStudent(StudentDTO student) {
-        House house = getHouseFromString(student.getHouse());
+        House house = utilities.getHouseFromString(student.getHouse());
 
         if (house == null) return null;
 
-        Student newStudent;
 
-        if (student.getFullName() != null) {
-            newStudent = new Student(student.getFullName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
-        } else {
-            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
-        }
+        Student newStudent = new Student(student.getName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
+//        if (student.getFullName() != null) {
+//        } else {
+//            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
+//        }
         studentRepository.save(newStudent);
         return fromModelToDTO(newStudent);
 
@@ -61,15 +63,13 @@ public class StudentService {
 
     public StudentDTO updateStudent(Long id, StudentDTO student) {
         Optional<Student> original = studentRepository.findById(id);
-        House house = getHouseFromString(student.getHouse());
+        House house = utilities.getHouseFromString(student.getHouse());
 
         if (original.isPresent() && house != null) {
             Student originalStudent = original.get();
 
             //Update original student
-            originalStudent.setFirstName(student.getFirstName());
-            originalStudent.setMiddleName(student.getMiddleName());
-            originalStudent.setLastName(student.getLastName());
+            originalStudent.setFullName(student.getName());
             originalStudent.setDateOfBirth(student.getDateOfBirth());
             originalStudent.setHouse(house);
             originalStudent.setPrefect(student.isPrefect());
@@ -120,7 +120,8 @@ public class StudentService {
 
                 if (field != null) {
                     // If the field is house, get the house from the string
-                    if (key.equals("house")) value = getHouseFromString((String) value);
+                    if (key.equals("house")) value = utilities.getHouseFromString((String) value);
+
                     // If the field is graduationYear, set the student to graduated
                     if (key.equals("graduationYear")) student.get().setGraduated(true);
 
@@ -138,12 +139,7 @@ public class StudentService {
     }
 
     private StudentDTO fromModelToDTO(Student student) {
-        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getFullName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
+        return new StudentDTO(student.getId(), student.getFullName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
     }
-
-    private House getHouseFromString(String houseName) {
-        return houseRepository.findByNameContainingIgnoreCase(houseName);
-    }
-
 }
 

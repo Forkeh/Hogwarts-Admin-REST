@@ -4,10 +4,7 @@ import java.time.LocalDate;
 
 public class StudentDTO {
     private Long id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String fullName;
+    private String name;
     private LocalDate dateOfBirth;
     private String house;
     private boolean prefect;
@@ -19,12 +16,9 @@ public class StudentDTO {
     public StudentDTO() {
     }
 
-    public StudentDTO(Long id, String firstName, String middleName, String lastName, String fullName, LocalDate dateOfBirth, String house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
+    public StudentDTO(Long id, String name, LocalDate dateOfBirth, String house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
         this.id = id;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.fullName = fullName;
+        this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.house = house;
         this.prefect = prefect;
@@ -38,36 +32,12 @@ public class StudentDTO {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDate getDateOfBirth() {

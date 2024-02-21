@@ -81,19 +81,29 @@ public class Student {
     }
 
     public void setFullName(String fullName) {
-        int firstSpace = fullName.indexOf(" ");
-        int lastSpace = fullName.lastIndexOf(" ");
+//        int firstSpace = fullName.indexOf(" ");
+//        int lastSpace = fullName.lastIndexOf(" ");
+//
+//        String firstName = fullName.substring(0, firstSpace);
+//        String lastName = fullName.substring(lastSpace + 1);
+//
+//        if (firstSpace != lastSpace) {
+//            String middleName = fullName.substring(firstSpace + 1, lastSpace);
+//            setMiddleName(middleName);
+//        }
+//
+//        setFirstName(firstName);
+//        setLastName(lastName);
 
-        String firstName = fullName.substring(0, firstSpace);
-        String lastName = fullName.substring(lastSpace + 1);
-
-        if (firstSpace != lastSpace) {
-            String middleName = fullName.substring(firstSpace + 1, lastSpace);
-            setMiddleName(middleName);
+        String[] nameParts = fullName.split(" ");
+        setFirstName(nameParts[0]);
+        if (nameParts.length > 2) {
+            setMiddleName(nameParts[1]);
+            setLastName(nameParts[2]);
+        } else {
+            setMiddleName(null);
+            setLastName(nameParts[1]);
         }
-
-        setFirstName(firstName);
-        setLastName(lastName);
     }
 
     public String getFullName() {
@@ -150,6 +160,14 @@ public class Student {
         this.graduated = graduated;
     }
 
+    public int getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(int schoolYear) {
+        this.schoolYear = schoolYear;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -166,11 +184,4 @@ public class Student {
                 '}';
     }
 
-    public int getSchoolYear() {
-        return schoolYear;
-    }
-
-    public void setSchoolYear(int schoolYear) {
-        this.schoolYear = schoolYear;
-    }
 }
