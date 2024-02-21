@@ -163,9 +163,9 @@ public class CourseService {
     }
 
     public Course addCourseStudents(Long id, List<Object> students) {
-        Optional<Course> original = courseRepository.findById(id);
+        Optional<Course> course = courseRepository.findById(id);
 
-        if (original.isEmpty()) return null;
+        if (course.isEmpty()) return null;
 
         // Loop through students info
         for (Object studentInfo : students) {
@@ -193,7 +193,7 @@ public class CourseService {
                 }
             }
         }
-        return null;
+        return course.get();
     }
 
     private String[] nameSplitter(String name) {

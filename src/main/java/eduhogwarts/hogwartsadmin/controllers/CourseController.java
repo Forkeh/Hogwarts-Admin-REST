@@ -73,9 +73,15 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/students")
-    public Course addCourseStudents(@PathVariable Long id, @RequestBody List<Object> students) {
+    public ResponseEntity<Course> addCourseStudents(@PathVariable Long id, @RequestBody List<Object> students) {
 
-        return courseService.addCourseStudents(id, students);
+        Course course = courseService.addCourseStudents(id, students);
+
+        if (course != null) {
+            return ResponseEntity.ok().body(course);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}")
