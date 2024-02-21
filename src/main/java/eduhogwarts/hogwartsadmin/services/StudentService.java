@@ -68,25 +68,28 @@ public class StudentService {
         House house = utilities.getHouseFromString(student.getHouse());
 
         if (original.isPresent() && house != null) {
-            Student originalStudent = original.get();
-
-            //Update original student
-            originalStudent.setFullName(student.getName());
-            originalStudent.setDateOfBirth(student.getDateOfBirth());
-            originalStudent.setHouse(house);
-            originalStudent.setPrefect(student.isPrefect());
-            originalStudent.setEnrollmentYear(student.getEnrollmentYear());
-            originalStudent.setGraduationYear(student.getGraduationYear());
-            originalStudent.setGraduated(student.isGraduated());
-            originalStudent.setSchoolYear(student.getSchoolYear());
-
+            Student updatedStudent = updateStudentFields(student, original.get(), house);
 
             // Save and return updated student
-            studentRepository.save(originalStudent);
-            return modelMapper.studentModelToDTO(originalStudent);
+            studentRepository.save(updatedStudent);
+            return modelMapper.studentModelToDTO(updatedStudent);
         } else {
             return null;
         }
+    }
+
+    private static Student updateStudentFields(StudentDTO student, Student originalStudent, House house) {
+
+        //Update original student
+        originalStudent.setFullName(student.getName());
+        originalStudent.setDateOfBirth(student.getDateOfBirth());
+        originalStudent.setHouse(house);
+        originalStudent.setPrefect(student.isPrefect());
+        originalStudent.setEnrollmentYear(student.getEnrollmentYear());
+        originalStudent.setGraduationYear(student.getGraduationYear());
+        originalStudent.setGraduated(student.isGraduated());
+        originalStudent.setSchoolYear(student.getSchoolYear());
+        return originalStudent;
     }
 
     public StudentDTO deleteStudent(Long id) {
@@ -138,10 +141,6 @@ public class StudentService {
         } else {
             return null;
         }
-    }
-
-    private StudentDTO fromModelToDTO(Student student) {
-        return new StudentDTO(student.getId(), student.getFullName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
     }
 }
 
