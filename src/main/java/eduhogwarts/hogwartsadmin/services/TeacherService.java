@@ -3,8 +3,10 @@ package eduhogwarts.hogwartsadmin.services;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.EmpType;
+import eduhogwarts.hogwartsadmin.models.House;
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
+import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,12 @@ public class TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
+    private final HouseRepository houseRepository;
 
-    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository) {
+    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository, HouseRepository houseRepository) {
         this.teacherRepository = teacherRepository;
         this.courseRepository = courseRepository;
+        this.houseRepository = houseRepository;
     }
 
     public List<TeacherDTO> getAllTeachers() {
@@ -37,23 +41,31 @@ public class TeacherService {
                 orElse(null);
     }
 
-    public Teacher createTeacher(Teacher teacher) {
-        return teacherRepository.save(teacher);
+    public TeacherDTO createTeacher(TeacherDTO teacher) {
+        House house = houseRepository.findByNameContainingIgnoreCase(teacher.getHouse());
+
+        if (house == null) return null;
+
+        Teacher newTeacher = new Teacher(teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getDateOfBirth(), house, teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
+        teacherRepository.save(newTeacher);
+        return fromModelToDTO(newTeacher);
     }
 
-    public Teacher updateTeacher(Long id, Teacher updatedTeacher) {
+    public TeacherDTO updateTeacher(Long id, TeacherDTO updatedTeacher) {
         Teacher original = teacherRepository.findById(id).orElse(null);
+        House house = houseRepository.findByNameContainingIgnoreCase(updatedTeacher.getHouse());
 
-        if (original != null) {
-            BeanUtils.copyProperties(updatedTeacher, original, "id");
-            return teacherRepository.save(original);
-
+        if (original != null && house != null) {
+            BeanUtils.copyProperties(updatedTeacher, original, "id", "house");
+            original.setHouse(house);
+            teacherRepository.save(original);
+            return fromModelToDTO(original);
         } else {
             return null;
         }
     }
 
-    public Teacher deleteTeacher(Long id) {
+    public TeacherDTO deleteTeacher(Long id) {
         Teacher teacher = teacherRepository.findById(id).orElse(null);
         if (teacher != null) {
             List<Course> courses = courseRepository.findAll();
@@ -65,7 +77,7 @@ public class TeacherService {
                 }
             }
             teacherRepository.delete(teacher);
-            return teacher;
+            return fromModelToDTO(teacher);
         } else {
             return null;
         }
@@ -109,7 +121,7 @@ public class TeacherService {
     }
 
     private TeacherDTO fromModelToDTO(Teacher teacher) {
-        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getHouse().getName(), teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
+        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getDateOfBirth(), teacher.getHouse().getName(), teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
     }
 
 }

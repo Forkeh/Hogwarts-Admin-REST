@@ -10,6 +10,7 @@ public class TeacherDTO {
     private String firstName;
     private String middleName;
     private String lastName;
+    private LocalDate dateOfBirth;
     private String house;
     boolean headOfHouse;
     EmpType employment;
@@ -19,11 +20,12 @@ public class TeacherDTO {
     public TeacherDTO() {
     }
 
-    public TeacherDTO(Long id, String firstName, String middleName, String lastName, String house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
+    public TeacherDTO(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
         this.house = house;
         this.headOfHouse = headOfHouse;
         this.employment = employment;
@@ -57,6 +59,14 @@ public class TeacherDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getHouse() {

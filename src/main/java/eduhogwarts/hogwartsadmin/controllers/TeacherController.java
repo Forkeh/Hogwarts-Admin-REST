@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Refactor to use TeacherDTO through every layer
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {
@@ -40,14 +39,19 @@ public class TeacherController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public Teacher createTeacher(@RequestBody Teacher teacher) {
-        return teacherService.createTeacher(teacher);
+    public ResponseEntity<TeacherDTO> createTeacher(@RequestBody TeacherDTO teacher) {
+        TeacherDTO createdTeacher = teacherService.createTeacher(teacher);
+
+        if (createdTeacher != null) {
+            return ResponseEntity.ok().body(createdTeacher);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable Long id, @RequestBody Teacher updatedTeacher) {
-        Teacher original = teacherService.updateTeacher(id, updatedTeacher);
+    public ResponseEntity<TeacherDTO> updateTeacher(@PathVariable Long id, @RequestBody TeacherDTO updatedTeacher) {
+        TeacherDTO original = teacherService.updateTeacher(id, updatedTeacher);
 
         if (original != null) {
             return ResponseEntity.ok().body(original);
@@ -57,9 +61,9 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Teacher> deleteTeacher(@PathVariable Long id) {
+    public ResponseEntity<TeacherDTO> deleteTeacher(@PathVariable Long id) {
 
-        Teacher deletedTeacher = teacherService.deleteTeacher(id);
+        TeacherDTO deletedTeacher = teacherService.deleteTeacher(id);
 
         if (deletedTeacher != null) {
             return ResponseEntity.ok().body(deletedTeacher);
