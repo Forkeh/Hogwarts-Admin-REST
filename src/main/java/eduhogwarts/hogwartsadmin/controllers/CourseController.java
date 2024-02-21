@@ -1,6 +1,7 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.Student;
@@ -44,8 +45,8 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/teacher")
-    public ResponseEntity<Teacher> getCourseTeacher(@PathVariable Long id) {
-        Teacher teacher = courseService.getCourseTeacher(id);
+    public ResponseEntity<TeacherDTO> getCourseTeacher(@PathVariable Long id) {
+        TeacherDTO teacher = courseService.getCourseTeacher(id);
 
         if (teacher != null) {
             return ResponseEntity.ok(teacher);
@@ -56,8 +57,8 @@ public class CourseController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<Set<Student>> getCourseStudents(@PathVariable Long id) {
-        Set<Student> students = courseService.getCourseStudents(id);
+    public ResponseEntity<Set<StudentDTO>> getCourseStudents(@PathVariable Long id) {
+        Set<StudentDTO> students = courseService.getCourseStudents(id);
 
         if (students != null) {
             return ResponseEntity.ok(students);
@@ -118,7 +119,7 @@ public class CourseController {
     @PutMapping("/{courseId}/students/{studentId}")
     public ResponseEntity<?> addCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
         try {
-            Set<Student> students = courseService.addCourseStudent(courseId, studentId);
+            Set<StudentDTO> students = courseService.addCourseStudent(courseId, studentId);
 
             if (students != null) {
                 return ResponseEntity.ok().body(students);
@@ -164,7 +165,7 @@ public class CourseController {
     @DeleteMapping("/{courseId}/students/{studentId}")
     public ResponseEntity<?> deleteCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
         try {
-            Set<Student> students = courseService.deleteCourseStudent(courseId, studentId);
+            Set<StudentDTO> students = courseService.deleteCourseStudent(courseId, studentId);
 
             if (students != null) {
                 return ResponseEntity.ok().body(students);

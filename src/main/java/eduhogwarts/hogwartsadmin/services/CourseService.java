@@ -1,5 +1,6 @@
 package eduhogwarts.hogwartsadmin.services;
 
+import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.Student;
@@ -7,13 +8,13 @@ import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
+import eduhogwarts.hogwartsadmin.utils.ModelMapper;
 import eduhogwarts.hogwartsadmin.utils.Utilities;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-// TODO Make all students/teacher returns into DTOs
 @Service
 public class CourseService {
 
@@ -21,12 +22,14 @@ public class CourseService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final Utilities utilities;
+    private final ModelMapper modelMapper;
 
-    public CourseService(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, Utilities utilities) {
+    public CourseService(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, Utilities utilities, ModelMapper modelMapper) {
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.utilities = utilities;
+        this.modelMapper = modelMapper;
     }
 
     public List<Course> getAllCourses() {
@@ -37,24 +40,23 @@ public class CourseService {
         return courseRepository.findById(id).orElse(null);
     }
 
-    public Teacher getCourseTeacher(Long id) {
+    public TeacherDTO getCourseTeacher(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
             Course currentCourse = course.get();
-            return currentCourse.getTeacher();
+            return modelMapper.teacherModelToDTO(currentCourse.getTeacher());
         } else {
             return null;
         }
     }
 
 
-    public Set<Student> getCourseStudents(Long id) {
+    public Set<StudentDTO> getCourseStudents(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
-            Course currentCourse = course.get();
-            return currentCourse.getStudents();
+            return modelMapper.getStudentDTOS(course.get().getStudents());
         } else {
             return null;
         }
@@ -98,7 +100,7 @@ public class CourseService {
         }
     }
 
-    public Set<Student> addCourseStudent(Long courseId, Long studentId) {
+    public Set<StudentDTO> addCourseStudent(Long courseId, Long studentId) {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 
@@ -108,14 +110,17 @@ public class CourseService {
             Student student = originalStudent.get();
 
             // check if student is already in course
-            if (!course.getStudents().contains(student)) {
+            if (course.getStudents().contains(student))
+                // TODO: Exception handling (Global?)
+                throw new IllegalArgumentException("Student is already in course");
 
-                // if not, add student to course
-                course.getStudents().add(student);
+            // if not, add student to course
+            course.getStudents().add(student);
 
-                courseRepository.save(course);
-            }
-            return course.getStudents();
+            courseRepository.save(course);
+
+            // Return updated course list
+            return modelMapper.getStudentDTOS(course.getStudents());
         } else {
             return null;
         }
@@ -147,7 +152,7 @@ public class CourseService {
         }
     }
 
-    public Set<Student> deleteCourseStudent(Long courseId, Long studentId) {
+    public Set<StudentDTO> deleteCourseStudent(Long courseId, Long studentId) {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 
@@ -159,11 +164,12 @@ public class CourseService {
                 course.getStudents().remove(student);
                 courseRepository.save(course);
             }
-            return course.getStudents();
+            return modelMapper.getStudentDTOS(course.getStudents());
         } else {
             return null;
         }
     }
+
 
     public Course addCourseStudents(Long id, List<Object> students) {
         Optional<Course> course = courseRepository.findById(id);

@@ -55,14 +55,15 @@ public class TeacherService {
     }
 
     public TeacherDTO updateTeacher(Long id, TeacherDTO updatedTeacher) {
-        Teacher original = teacherRepository.findById(id).orElse(null);
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
         House house = houseRepository.findByNameContainingIgnoreCase(updatedTeacher.getHouse());
 
-        if (original != null && house != null) {
-            BeanUtils.copyProperties(updatedTeacher, original, "id", "house");
-            original.setHouse(house);
-            teacherRepository.save(original);
-            return modelMapper.teacherModelToDTO(original);
+        if (teacher != null && house != null) {
+            BeanUtils.copyProperties(updatedTeacher, teacher, "id", "house");
+            // Have to set house object separately
+            teacher.setHouse(house);
+            teacherRepository.save(teacher);
+            return modelMapper.teacherModelToDTO(teacher);
         } else {
             return null;
         }
