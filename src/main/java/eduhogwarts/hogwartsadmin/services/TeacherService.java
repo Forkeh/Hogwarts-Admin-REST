@@ -8,6 +8,7 @@ import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
+import eduhogwarts.hogwartsadmin.utils.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -22,22 +23,24 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
     private final HouseRepository houseRepository;
+    private final ModelMapper modelMapper;
 
-    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository, HouseRepository houseRepository) {
+    public TeacherService(TeacherRepository teacherRepository, CourseRepository courseRepository, HouseRepository houseRepository, ModelMapper modelMapper) {
         this.teacherRepository = teacherRepository;
         this.courseRepository = courseRepository;
         this.houseRepository = houseRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<TeacherDTO> getAllTeachers() {
         return teacherRepository.findAll().
-                stream().map(this::fromModelToDTO).
+                stream().map(modelMapper::teacherModelToDTO).
                 collect(Collectors.toList());
     }
 
     public TeacherDTO getTeacherById(Long id) {
         return teacherRepository.findById(id).
-                map(this::fromModelToDTO).
+                map(modelMapper::teacherModelToDTO).
                 orElse(null);
     }
 
@@ -48,7 +51,7 @@ public class TeacherService {
 
         Teacher newTeacher = new Teacher(teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getDateOfBirth(), house, teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
         teacherRepository.save(newTeacher);
-        return fromModelToDTO(newTeacher);
+        return modelMapper.teacherModelToDTO(newTeacher);
     }
 
     public TeacherDTO updateTeacher(Long id, TeacherDTO updatedTeacher) {
@@ -59,7 +62,7 @@ public class TeacherService {
             BeanUtils.copyProperties(updatedTeacher, original, "id", "house");
             original.setHouse(house);
             teacherRepository.save(original);
-            return fromModelToDTO(original);
+            return modelMapper.teacherModelToDTO(original);
         } else {
             return null;
         }
@@ -77,7 +80,7 @@ public class TeacherService {
                 }
             }
             teacherRepository.delete(teacher);
-            return fromModelToDTO(teacher);
+            return modelMapper.teacherModelToDTO(teacher);
         } else {
             return null;
         }
@@ -90,7 +93,7 @@ public class TeacherService {
             // toggle head of house
             teacher.setHeadOfHouse(!teacher.isHeadOfHouse());
             teacherRepository.save(teacher);
-            return fromModelToDTO(teacher);
+            return modelMapper.teacherModelToDTO(teacher);
         } else {
             return null;
         }
@@ -102,7 +105,7 @@ public class TeacherService {
         if (teacher != null) {
             teacher.setEmploymentEnd(employmentEnd.get("employmentEnd"));
             teacherRepository.save(teacher);
-            return fromModelToDTO(teacher);
+            return modelMapper.teacherModelToDTO(teacher);
         } else {
             return null;
         }
@@ -114,14 +117,9 @@ public class TeacherService {
         if (teacher != null) {
             teacher.setEmployment(employment.get("employment"));
             teacherRepository.save(teacher);
-            return fromModelToDTO(teacher);
+            return modelMapper.teacherModelToDTO(teacher);
         } else {
             return null;
         }
     }
-
-    private TeacherDTO fromModelToDTO(Teacher teacher) {
-        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getDateOfBirth(), teacher.getHouse().getName(), teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
-    }
-
 }
