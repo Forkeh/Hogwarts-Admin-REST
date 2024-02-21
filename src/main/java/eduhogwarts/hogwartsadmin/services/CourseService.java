@@ -192,13 +192,11 @@ public class CourseService {
                     student.ifPresent(foundStudent -> addCourseStudent(id, foundStudent.getId()));
                 }
 
-                // If the key is "name", split the name and find the student by first name and add them to the course
+                // If the key is "name", split the name and find the student by first or last name and add them to the course
                 else if (key.equals("name")) {
                     String[] nameParts = utilities.nameSplitter((String) studentMap.get(key));
-                    Student student = studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(nameParts[0], nameParts[nameParts.length - 1]);
-                    if (student != null) {
-                        addCourseStudent(id, student.getId());
-                    }
+                    Optional<Student> student = studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(nameParts[0], nameParts[nameParts.length - 1]);
+                    student.ifPresent(foundStudent -> addCourseStudent(id, foundStudent.getId()));
                 }
             }
         }
