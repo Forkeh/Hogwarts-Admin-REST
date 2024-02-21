@@ -2,13 +2,16 @@ package eduhogwarts.hogwartsadmin.services;
 
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
+import eduhogwarts.hogwartsadmin.models.EmpType;
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,7 +71,45 @@ public class TeacherService {
         }
     }
 
-    private TeacherDTO fromModelToDTO(Teacher teacher) {
-        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getHouse().getName());
+    public TeacherDTO patchTeacherHeadOfHouse(Long id) {
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+
+        if (teacher != null) {
+            // toggle head of house
+            teacher.setHeadOfHouse(!teacher.isHeadOfHouse());
+            teacherRepository.save(teacher);
+            return fromModelToDTO(teacher);
+        } else {
+            return null;
+        }
     }
+
+    public TeacherDTO patchTeacherEmploymentEnd(Long id, Map<String, LocalDate> employmentEnd) {
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+
+        if (teacher != null) {
+            teacher.setEmploymentEnd(employmentEnd.get("employmentEnd"));
+            teacherRepository.save(teacher);
+            return fromModelToDTO(teacher);
+        } else {
+            return null;
+        }
+    }
+
+    public TeacherDTO patchTeacherEmployment(Long id, Map<String, EmpType> employment) {
+        Teacher teacher = teacherRepository.findById(id).orElse(null);
+
+        if (teacher != null) {
+            teacher.setEmployment(employment.get("employment"));
+            teacherRepository.save(teacher);
+            return fromModelToDTO(teacher);
+        } else {
+            return null;
+        }
+    }
+
+    private TeacherDTO fromModelToDTO(Teacher teacher) {
+        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getHouse().getName(), teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
+    }
+
 }

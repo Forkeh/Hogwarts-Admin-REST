@@ -1,5 +1,9 @@
 package eduhogwarts.hogwartsadmin.dto;
 
+import eduhogwarts.hogwartsadmin.models.EmpType;
+
+import java.time.LocalDate;
+
 public class TeacherDTO {
 
     private Long id;
@@ -7,16 +11,24 @@ public class TeacherDTO {
     private String middleName;
     private String lastName;
     private String house;
+    boolean headOfHouse;
+    EmpType employment;
+    LocalDate employmentStart;
+    LocalDate employmentEnd;
 
     public TeacherDTO() {
     }
 
-    public TeacherDTO(Long id, String firstName, String middleName, String lastName, String house) {
+    public TeacherDTO(Long id, String firstName, String middleName, String lastName, String house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.house = house;
+        this.headOfHouse = headOfHouse;
+        this.employment = employment;
+        this.employmentStart = employmentStart;
+        this.employmentEnd = employmentEnd;
     }
 
     public Long getId() {
@@ -53,6 +65,38 @@ public class TeacherDTO {
 
     public void setHouse(String house) {
         this.house = house;
+    }
+
+    public boolean isHeadOfHouse() {
+        return headOfHouse;
+    }
+
+    public void setHeadOfHouse(boolean headOfHouse) {
+        this.headOfHouse = headOfHouse;
+    }
+
+    public EmpType getEmployment() {
+        return employment;
+    }
+
+    public void setEmployment(EmpType employment) {
+        this.employment = employment;
+    }
+
+    public LocalDate getEmploymentStart() {
+        return employmentStart;
+    }
+
+    public void setEmploymentStart(LocalDate employmentStart) {
+        this.employmentStart = employmentStart;
+    }
+
+    public LocalDate getEmploymentEnd() {
+        return employmentEnd;
+    }
+
+    public void setEmploymentEnd(LocalDate employmentEnd) {
+        this.employmentEnd = employmentEnd;
     }
 
     @Override
