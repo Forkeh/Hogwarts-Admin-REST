@@ -50,9 +50,9 @@ public class StudentService {
         Student newStudent;
 
         if (student.getFullName() != null) {
-            newStudent = new Student(student.getFullName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getEnrollmentYear(), student.isGraduated(), student.getSchoolYear());
+            newStudent = new Student(student.getFullName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
         } else {
-            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getEnrollmentYear(), student.isGraduated(), student.getSchoolYear());
+            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
         }
         studentRepository.save(newStudent);
         return fromModelToDTO(newStudent);
@@ -121,6 +121,8 @@ public class StudentService {
                 if (field != null) {
                     // If the field is house, get the house from the string
                     if (key.equals("house")) value = getHouseFromString((String) value);
+                    // If the field is graduationYear, set the student to graduated
+                    if (key.equals("graduationYear")) student.get().setGraduated(true);
 
                     // Set the field to accessible, set the value, and set the field back to not accessible
                     field.setAccessible(true);
