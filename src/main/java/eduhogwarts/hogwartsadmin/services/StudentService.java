@@ -40,16 +40,20 @@ public class StudentService {
     }
 
     public StudentDTO createStudent(StudentDTO student) {
-        // TODO: Create student where house field is a string?
         House house = houseRepository.findByNameContainingIgnoreCase(student.getHouse());
 
-        if (house != null) {
-            Student newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getEnrollmentYear(), student.isGraduated(), student.getSchoolYear());
-            studentRepository.save(newStudent);
-            return fromModelToDTO(newStudent);
+        if (house == null) return null;
+
+        Student newStudent;
+
+        if (student.getFullName() != null) {
+            newStudent = new Student(student.getFullName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getEnrollmentYear(), student.isGraduated(), student.getSchoolYear());
         } else {
-            return null;
+            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getEnrollmentYear(), student.isGraduated(), student.getSchoolYear());
         }
+        studentRepository.save(newStudent);
+        return fromModelToDTO(newStudent);
+
     }
 
     public StudentDTO updateStudent(Long id, StudentDTO student) {
@@ -103,7 +107,7 @@ public class StudentService {
     }
 
     private StudentDTO fromModelToDTO(Student student) {
-        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
+        return new StudentDTO(student.getId(), student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getFullName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
     }
 }
 

@@ -12,6 +12,7 @@ public class StudentDTO {
     private String firstName;
     private String middleName;
     private String lastName;
+    private String fullName;
     private LocalDate dateOfBirth;
     private String house;
     private boolean prefect;
@@ -23,11 +24,12 @@ public class StudentDTO {
     public StudentDTO() {
     }
 
-    public StudentDTO(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
+    public StudentDTO(Long id, String firstName, String middleName, String lastName, String fullName, LocalDate dateOfBirth, String house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated, int schoolYear) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
+        this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.house = house;
         this.prefect = prefect;
@@ -63,6 +65,14 @@ public class StudentDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public LocalDate getDateOfBirth() {

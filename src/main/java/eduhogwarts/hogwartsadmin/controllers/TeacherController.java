@@ -2,16 +2,14 @@ package eduhogwarts.hogwartsadmin.controllers;
 
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Teacher;
-import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import eduhogwarts.hogwartsadmin.services.TeacherService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+// TODO: Refactor to use TeacherDTO through every layer
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {
