@@ -1,5 +1,6 @@
 package eduhogwarts.hogwartsadmin.utils;
 
+import eduhogwarts.hogwartsadmin.dto.CourseDTO;
 import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
@@ -18,7 +19,7 @@ public class ModelMapper {
     }
 
     public TeacherDTO teacherModelToDTO(Teacher teacher) {
-        return new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getDateOfBirth(), teacher.getHouse().getName(), teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
+        return new TeacherDTO(teacher.getId(), teacher.getFullName(), teacher.getDateOfBirth(), teacher.getHouse().getName(), teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
     }
 
     public Set<StudentDTO> getStudentDTOS(Set<Student> students) {
@@ -26,5 +27,13 @@ public class ModelMapper {
                 stream().
                 map(this::studentModelToDTO).
                 collect(Collectors.toSet());
+    }
+
+    public CourseDTO courseModelToDTO(Course course) {
+        Teacher teacher = course.getTeacher();
+        if (teacher != null) {
+            return new CourseDTO(course.getId(), course.getSubject(), course.getSchoolYear(), course.isCurrent(), teacherModelToDTO(course.getTeacher()), getStudentDTOS(course.getStudents()));
+        }
+        return new CourseDTO(course.getId(), course.getSubject(), course.getSchoolYear(), course.isCurrent(), null, getStudentDTOS(course.getStudents()));
     }
 }

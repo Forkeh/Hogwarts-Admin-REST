@@ -1,6 +1,7 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import eduhogwarts.hogwartsadmin.dto.CourseDTO;
 import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+// TODO: Make all Course layers use Course DTO
 @RestController
 @RequestMapping("/courses")
 public class CourseController {
@@ -29,13 +31,20 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<Course> getAllCourses() {
-        return courseService.getAllCourses();
+    public ResponseEntity<List<CourseDTO>> getAllCourses() {
+        List<CourseDTO> courses = courseService.getAllCourses();
+
+        if (courses != null) {
+            return ResponseEntity.ok().body(courses);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourse(@PathVariable Long id) {
-        Course course = courseService.getCourse(id);
+    public ResponseEntity<CourseDTO> getCourse(@PathVariable Long id) {
+        CourseDTO course = courseService.getCourse(id);
 
         if (course != null) {
             return ResponseEntity.ok().body(course);
@@ -69,8 +78,14 @@ public class CourseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Course createCourse(@RequestBody Course course) {
-        return courseService.createCourse(course);
+    public ResponseEntity<CourseDTO> createCourse(@RequestBody CourseDTO course) {
+
+        CourseDTO newCourse = courseService.createCourse(course);
+        if (newCourse != null) {
+            return ResponseEntity.ok().body(newCourse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{id}/students")

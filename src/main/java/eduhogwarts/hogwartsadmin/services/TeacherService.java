@@ -49,7 +49,7 @@ public class TeacherService {
 
         if (house == null) return null;
 
-        Teacher newTeacher = new Teacher(teacher.getFirstName(), teacher.getMiddleName(), teacher.getLastName(), teacher.getDateOfBirth(), house, teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
+        Teacher newTeacher = new Teacher(teacher.getName(), teacher.getDateOfBirth(), house, teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
         teacherRepository.save(newTeacher);
         return modelMapper.teacherModelToDTO(newTeacher);
     }

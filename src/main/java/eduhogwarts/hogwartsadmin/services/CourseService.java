@@ -1,5 +1,6 @@
 package eduhogwarts.hogwartsadmin.services;
 
+import eduhogwarts.hogwartsadmin.dto.CourseDTO;
 import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
@@ -14,7 +15,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+// TODO: Make all Course layers use Course DTO
 @Service
 public class CourseService {
 
@@ -32,12 +35,18 @@ public class CourseService {
         this.modelMapper = modelMapper;
     }
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public List<CourseDTO> getAllCourses() {
+        // TODO: Not working, something with the teacher
+        return courseRepository.
+                findAll().
+                stream().
+                map(modelMapper::courseModelToDTO).
+                toList();
     }
 
-    public Course getCourse(Long id) {
-        return courseRepository.findById(id).orElse(null);
+    public CourseDTO getCourse(Long id) {
+
+        return courseRepository.findById(id).map(modelMapper::courseModelToDTO).orElse(null);
     }
 
     public TeacherDTO getCourseTeacher(Long id) {
@@ -62,9 +71,15 @@ public class CourseService {
         }
     }
 
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
+    public CourseDTO createCourse(CourseDTO courseDTO) {
+        Teacher teacher = findTeacherById(courseDTO.getTeacher().getId());
+        Set<Student> students = findStudentsByIds(courseDTO.getStudents().stream().map(StudentDTO::getId).collect(Collectors.toSet()));
+        Course newCourse = new Course(courseDTO.getSubject(), courseDTO.getSchoolYear(), courseDTO.isCurrent(), teacher, students);
+
+        courseRepository.save(newCourse);
+        return modelMapper.courseModelToDTO(newCourse);
     }
+
 
     public Course updateCourse(Long id, Course updatedCourse) {
         Optional<Course> original = courseRepository.findById(id);
@@ -170,7 +185,6 @@ public class CourseService {
         }
     }
 
-
     public Course addCourseStudents(Long id, List<Object> students) {
         Optional<Course> course = courseRepository.findById(id);
 
@@ -201,5 +215,13 @@ public class CourseService {
             }
         }
         return course.get();
+    }
+
+    private Teacher findTeacherById(Long id) {
+        return teacherRepository.findById(id).orElse(null);
+    }
+
+    private Set<Student> findStudentsByIds(Set<Long> studentIds) {
+        return new HashSet<>(studentRepository.findAllById(studentIds));
     }
 }

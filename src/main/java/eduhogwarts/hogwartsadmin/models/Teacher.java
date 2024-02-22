@@ -41,6 +41,11 @@ public class Teacher {
         this(firstName, null, lastName, dateOfBirth, house, headOfHouse, employment, employmentStart, employmentEnd);
     }
 
+    public Teacher(String fullName, LocalDate dateOfBirth, House house, boolean headOfHouse, EmpType employment, LocalDate employmentStart, LocalDate employmentEnd) {
+        this(null, null, null, dateOfBirth, house, headOfHouse, employment, employmentStart, employmentEnd);
+        this.setFullName(fullName);
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -68,6 +73,25 @@ public class Teacher {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setFullName(String fullName) {
+
+        String[] nameParts = fullName.split(" ");
+        setFirstName(nameParts[0]);
+        if (nameParts.length > 2) {
+            setMiddleName(nameParts[1]);
+            setLastName(nameParts[2]);
+        } else {
+            setMiddleName(null);
+            setLastName(nameParts[1]);
+        }
+    }
+
+    public String getFullName() {
+        return this.getMiddleName() != null ?
+                getFirstName() + " " + getMiddleName() + " " + getLastName() :
+                getFirstName() + " " + getLastName();
     }
 
     public LocalDate getDateOfBirth() {
