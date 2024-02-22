@@ -128,11 +128,14 @@ public class CourseService {
                 // TODO: Exception handling (Global?)
                 throw new IllegalArgumentException("Student is already in course");
 
-            // if not, add student to course
-            course.getStudents().add(student);
-
-            courseRepository.save(course);
-
+            // if not, check if student is in the same school year as the course
+            if (isSchoolYearMatch(course.getSchoolYear(), student.getSchoolYear())) {
+                course.getStudents().add(student);
+                courseRepository.save(course);
+            } else {
+                // TODO: Exception handling (Global?)
+                throw new IllegalArgumentException("Student is not in the same school year as the course");
+            }
             // Return updated course list
             return modelMapper.getStudentDTOS(course.getStudents());
         } else {
@@ -250,6 +253,10 @@ public class CourseService {
     private Set<Student> findStudentsByIds(Set<Long> studentIds) {
 
         return new HashSet<>(studentRepository.findAllById(studentIds));
+    }
+
+    private boolean isSchoolYearMatch(int courseYear, int studentYear) {
+        return courseYear == studentYear;
     }
 
 
