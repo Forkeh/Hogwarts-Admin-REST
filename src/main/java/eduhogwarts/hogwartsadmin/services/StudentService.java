@@ -50,7 +50,7 @@ public class StudentService {
     public StudentDTO createStudent(StudentDTO student) {
         House house = utilities.getHouseFromString(student.getHouse());
 
-        if (house == null) return null;
+        if (house == null) throw new RuntimeException("House not found with name: " + student.getHouse());
 
 
         Student newStudent = new Student(student.getName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
@@ -60,7 +60,6 @@ public class StudentService {
 //        }
         studentRepository.save(newStudent);
         return modelMapper.studentModelToDTO(newStudent);
-
     }
 
     public StudentDTO updateStudent(Long id, StudentDTO student) {
@@ -74,7 +73,7 @@ public class StudentService {
             studentRepository.save(updatedStudent);
             return modelMapper.studentModelToDTO(updatedStudent);
         } else {
-            return null;
+            throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.getHouse() + " respectively");
         }
     }
 
@@ -110,7 +109,7 @@ public class StudentService {
             studentRepository.deleteById(id);
             return modelMapper.studentModelToDTO(studentToDelete);
         } else {
-            return null;
+            throw new RuntimeException("Student not found with id: " + id);
         }
     }
 
@@ -139,7 +138,7 @@ public class StudentService {
             studentRepository.save(student.get());
             return modelMapper.studentModelToDTO(student.get());
         } else {
-            return null;
+            throw new RuntimeException("Student not found with id: " + id);
         }
     }
 }

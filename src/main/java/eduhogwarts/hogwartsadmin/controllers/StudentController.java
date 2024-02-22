@@ -31,11 +31,7 @@ public class StudentController {
     public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id) {
         StudentDTO student = studentService.getStudent(id);
 
-        if (student != null) {
-            return ResponseEntity.ok().body(student);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(student);
     }
 
     @PostMapping
@@ -43,11 +39,7 @@ public class StudentController {
 
         StudentDTO createdStudent = studentService.createStudent(student);
 
-        if (createdStudent != null) {
-            return ResponseEntity.ok().body(createdStudent);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        return ResponseEntity.ok().body(createdStudent);
     }
 
     @PutMapping("/{id}")
@@ -55,28 +47,19 @@ public class StudentController {
         StudentDTO updateStudent = studentService.updateStudent(id, student);
 
         return ResponseEntity.ok().body(updateStudent);
-
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<StudentDTO> deleteStudent(@PathVariable Long id) {
         StudentDTO deletedStudent = studentService.deleteStudent(id);
 
-        if (deletedStudent != null) {
-            return ResponseEntity.ok().body(deletedStudent);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(deletedStudent);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<StudentDTO> patchStudentFields(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
         StudentDTO patchedStudent = studentService.patchStudentFields(id, fields);
 
-        if (patchedStudent != null) {
-            return ResponseEntity.ok().body(patchedStudent);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(patchedStudent);
     }
 }
