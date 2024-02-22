@@ -1,9 +1,12 @@
 package eduhogwarts.hogwartsadmin.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDate;
 
 public class StudentDTO {
     private Long id;
+    @NotBlank(message = "Name is required")
     private String name;
     private LocalDate dateOfBirth;
     private String house;

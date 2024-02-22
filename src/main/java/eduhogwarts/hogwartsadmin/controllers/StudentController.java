@@ -4,6 +4,7 @@ import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.services.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<StudentDTO> createStudent(@RequestBody StudentDTO student) {
+    public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO student) {
 
         StudentDTO createdStudent = studentService.createStudent(student);
 
@@ -50,14 +51,11 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id, @RequestBody StudentDTO student) {
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDTO student) {
         StudentDTO updateStudent = studentService.updateStudent(id, student);
 
-        if (updateStudent != null) {
-            return ResponseEntity.ok().body(updateStudent);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(updateStudent);
+
     }
 
     @DeleteMapping("/{id}")

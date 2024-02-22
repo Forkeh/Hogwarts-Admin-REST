@@ -44,7 +44,7 @@ public class StudentService {
     public StudentDTO getStudent(Long id) {
         return studentRepository.findById(id).
                 map(modelMapper::studentModelToDTO).
-                orElse(null);
+                orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
     public StudentDTO createStudent(StudentDTO student) {

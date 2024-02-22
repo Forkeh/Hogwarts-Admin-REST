@@ -1,11 +1,13 @@
 package eduhogwarts.hogwartsadmin.dto;
 
 import eduhogwarts.hogwartsadmin.models.Teacher;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Set;
 
 public class CourseDTO {
     private Long id;
+    @NotBlank(message = "Subject is required")
     private String subject;
     private int schoolYear;
     private boolean current;
