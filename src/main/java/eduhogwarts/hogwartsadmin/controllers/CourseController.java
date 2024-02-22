@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-// TODO: Make all Course layers use Course DTO
 @RestController
 @RequestMapping("/courses")
 public class CourseController {
@@ -106,17 +106,17 @@ public class CourseController {
 
     }
 
-    @PutMapping("/{id}/teacher")
-    public ResponseEntity<CourseDTO> updateCourseTeacher(@RequestBody TeacherDTO teacher, @PathVariable Long id) {
-
-        CourseDTO original = courseService.updateCourseTeacher(id, teacher);
-
-        if (original != null) {
-            return ResponseEntity.ok().body(original);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @PutMapping("/{id}/teacher")
+//    public ResponseEntity<CourseDTO> updateCourseTeacher(@RequestBody TeacherDTO teacher, @PathVariable Long id) {
+//
+//        CourseDTO original = courseService.updateCourseTeacher(id, teacher);
+//
+//        if (original != null) {
+//            return ResponseEntity.ok().body(original);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
     @PutMapping("/{courseId}/students/{studentId}")
     public ResponseEntity<Set<StudentDTO>> addCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
@@ -143,7 +143,6 @@ public class CourseController {
 
     }
 
-    // TODO: Make into PUT instead of DELETE (changeCourseTeacher)
     @DeleteMapping("/{id}/teacher")
     public ResponseEntity<?> deleteCourseTeacher(@PathVariable Long id) {
         try {
@@ -156,6 +155,17 @@ public class CourseController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
+        }
+    }
+
+    @PutMapping("/{id}/teacher")
+    public ResponseEntity<CourseDTO> updateCourseTeacher(@PathVariable Long id, @RequestBody Map<String, Long> teacherId) {
+        CourseDTO course = courseService.updateCourseTeacher(id, teacherId);
+
+        if (course != null) {
+            return ResponseEntity.ok().body(course);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-// TODO: Make all Course layers use Course DTO
 @Service
 public class CourseService {
 
@@ -59,7 +58,6 @@ public class CourseService {
         }
     }
 
-
     public Set<StudentDTO> getCourseStudents(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
@@ -98,23 +96,23 @@ public class CourseService {
         }
     }
 
-    public CourseDTO updateCourseTeacher(Long id, TeacherDTO teacher) {
-        Optional<Course> original = courseRepository.findById(id);
-        Optional<Teacher> originalTeacher = teacherRepository.findById(teacher.getId());
-
-        if (original.isPresent() && originalTeacher.isPresent()) {
-            Course originalCourse = original.get();
-
-            //Update original course
-            originalCourse.setTeacher(originalTeacher.get());
-
-            // Save and return updated course
-            courseRepository.save(originalCourse);
-            return modelMapper.courseModelToDTO(originalCourse);
-        } else {
-            return null;
-        }
-    }
+//    public CourseDTO updateCourseTeacher(Long id, TeacherDTO teacher) {
+//        Optional<Course> original = courseRepository.findById(id);
+//        Optional<Teacher> originalTeacher = teacherRepository.findById(teacher.getId());
+//
+//        if (original.isPresent() && originalTeacher.isPresent()) {
+//            Course originalCourse = original.get();
+//
+//            //Update original course
+//            originalCourse.setTeacher(originalTeacher.get());
+//
+//            // Save and return updated course
+//            courseRepository.save(originalCourse);
+//            return modelMapper.courseModelToDTO(originalCourse);
+//        } else {
+//            return null;
+//        }
+//    }
 
     public Set<StudentDTO> addCourseStudent(Long courseId, Long studentId) {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
@@ -168,6 +166,28 @@ public class CourseService {
         } else {
             return null;
         }
+    }
+
+    public CourseDTO updateCourseTeacher(Long id, Map<String, Long> teacherId) {
+        Optional<Course> original = courseRepository.findById(id);
+
+        if (original.isPresent()) {
+            Course course = original.get();
+            var teacherIdValue = teacherId.get("id");
+
+            if (teacherIdValue == null) {
+                course.setTeacher(null);
+            } else {
+                Optional<Teacher> originalTeacher = teacherRepository.findById(Long.parseLong(teacherIdValue.toString()));
+
+                if (originalTeacher.isEmpty()) return null;
+
+                course.setTeacher(originalTeacher.get());
+            }
+            courseRepository.save(course);
+            return modelMapper.courseModelToDTO(original.get());
+        }
+        return null;
     }
 
     public Set<StudentDTO> deleteCourseStudent(Long courseId, Long studentId) {
@@ -231,4 +251,6 @@ public class CourseService {
 
         return new HashSet<>(studentRepository.findAllById(studentIds));
     }
+
+
 }
