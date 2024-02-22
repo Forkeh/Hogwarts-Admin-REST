@@ -80,7 +80,7 @@ public class CourseService {
     }
 
 
-    public Course updateCourse(Long id, Course updatedCourse) {
+    public CourseDTO updateCourse(Long id, CourseDTO updatedCourse) {
         Optional<Course> original = courseRepository.findById(id);
 
         if (original.isPresent()) {
@@ -91,13 +91,14 @@ public class CourseService {
 
 
             // Save and return updated course
-            return courseRepository.save(originalCourse);
+            courseRepository.save(originalCourse);
+            return modelMapper.courseModelToDTO(originalCourse);
         } else {
             return null;
         }
     }
 
-    public Course updateCourseTeacher(Long id, TeacherDTO teacher) {
+    public CourseDTO updateCourseTeacher(Long id, TeacherDTO teacher) {
         Optional<Course> original = courseRepository.findById(id);
         Optional<Teacher> originalTeacher = teacherRepository.findById(teacher.getId());
 
@@ -108,7 +109,8 @@ public class CourseService {
             originalCourse.setTeacher(originalTeacher.get());
 
             // Save and return updated course
-            return courseRepository.save(originalCourse);
+            courseRepository.save(originalCourse);
+            return modelMapper.courseModelToDTO(originalCourse);
         } else {
             return null;
         }
@@ -140,12 +142,14 @@ public class CourseService {
         }
     }
 
-    public Course deleteCourse(Long id) {
+    public CourseDTO deleteCourse(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
-            Course courseToDelete = course.get();
+            CourseDTO courseToDelete = modelMapper.courseModelToDTO(course.get());
+
             courseRepository.deleteById(id);
+
             return courseToDelete;
         } else {
             return null;
@@ -184,7 +188,7 @@ public class CourseService {
         }
     }
 
-    public Course addCourseStudents(Long id, List<Object> students) {
+    public CourseDTO addCourseStudents(Long id, List<Object> students) {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isEmpty()) return null;
@@ -201,7 +205,9 @@ public class CourseService {
 
                 // If the key is "id", find the student by id and add them to the course
                 if (key.equals("id")) {
-                    Optional<Student> student = studentRepository.findById(Long.parseLong(studentMap.get(key).toString()));
+                    // Parse the id from the map and find the student by id
+                    Long studentId = Long.parseLong(studentMap.get(key).toString());
+                    Optional<Student> student = studentRepository.findById(studentId);
                     student.ifPresent(foundStudent -> addCourseStudent(id, foundStudent.getId()));
                 }
 
@@ -213,14 +219,16 @@ public class CourseService {
                 }
             }
         }
-        return course.get();
+        return modelMapper.courseModelToDTO(course.get());
     }
 
     private Teacher findTeacherById(Long id) {
+
         return teacherRepository.findById(id).orElse(null);
     }
 
     private Set<Student> findStudentsByIds(Set<Long> studentIds) {
+
         return new HashSet<>(studentRepository.findAllById(studentIds));
     }
 }

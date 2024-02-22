@@ -1,22 +1,15 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import eduhogwarts.hogwartsadmin.dto.CourseDTO;
 import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
-import eduhogwarts.hogwartsadmin.models.Student;
-import eduhogwarts.hogwartsadmin.models.Teacher;
-import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
-import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.services.CourseService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 // TODO: Make all Course layers use Course DTO
@@ -89,9 +82,9 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/students")
-    public ResponseEntity<Course> addCourseStudents(@PathVariable Long id, @RequestBody List<Object> students) {
+    public ResponseEntity<CourseDTO> addCourseStudents(@PathVariable Long id, @RequestBody List<Object> students) {
 
-        Course course = courseService.addCourseStudents(id, students);
+        CourseDTO course = courseService.addCourseStudents(id, students);
 
         if (course != null) {
             return ResponseEntity.ok().body(course);
@@ -101,64 +94,53 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@RequestBody Course updatedCourse, @PathVariable Long id) {
-        try {
-            Course updateCourse = courseService.updateCourse(id, updatedCourse);
+    public ResponseEntity<CourseDTO> updateCourse(@RequestBody CourseDTO updatedCourse, @PathVariable Long id) {
 
-            if (updateCourse != null) {
-                return ResponseEntity.ok().body(updateCourse);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
+        CourseDTO updateCourse = courseService.updateCourse(id, updatedCourse);
+
+        if (updateCourse != null) {
+            return ResponseEntity.ok().body(updateCourse);
+        } else {
+            return ResponseEntity.notFound().build();
         }
+
     }
 
     @PutMapping("/{id}/teacher")
-    public ResponseEntity<?> updateCourseTeacher(@RequestBody TeacherDTO teacher, @PathVariable Long id) {
-        try {
-            Course original = courseService.updateCourseTeacher(id, teacher);
+    public ResponseEntity<CourseDTO> updateCourseTeacher(@RequestBody TeacherDTO teacher, @PathVariable Long id) {
 
-            if (original != null) {
-                return ResponseEntity.ok().body(original);
-            } else {
-                return ResponseEntity.notFound().build();
+        CourseDTO original = courseService.updateCourseTeacher(id, teacher);
 
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
+        if (original != null) {
+            return ResponseEntity.ok().body(original);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{courseId}/students/{studentId}")
-    public ResponseEntity<?> addCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
-        try {
-            Set<StudentDTO> students = courseService.addCourseStudent(courseId, studentId);
+    public ResponseEntity<Set<StudentDTO>> addCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
 
-            if (students != null) {
-                return ResponseEntity.ok().body(students);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
+        Set<StudentDTO> students = courseService.addCourseStudent(courseId, studentId);
+
+        if (students != null) {
+            return ResponseEntity.ok().body(students);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
-        try {
-            Course courseToDelete = courseService.deleteCourse(id);
+    public ResponseEntity<CourseDTO> deleteCourse(@PathVariable Long id) {
 
-            if (courseToDelete != null) {
-                return ResponseEntity.ok().body("Deleted course: " + courseToDelete.getSubject() + ", id: " + courseToDelete.getId());
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
+        CourseDTO courseToDelete = courseService.deleteCourse(id);
+
+        if (courseToDelete != null) {
+            return ResponseEntity.ok().body(courseToDelete);
+        } else {
+            return ResponseEntity.notFound().build();
         }
+
     }
 
     // TODO: Make into PUT instead of DELETE (changeCourseTeacher)
@@ -178,18 +160,14 @@ public class CourseController {
     }
 
     @DeleteMapping("/{courseId}/students/{studentId}")
-    public ResponseEntity<?> deleteCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
-        try {
-            Set<StudentDTO> students = courseService.deleteCourseStudent(courseId, studentId);
+    public ResponseEntity<Set<StudentDTO>> deleteCourseStudent(@PathVariable Long courseId, @PathVariable Long studentId) {
 
-            if (students != null) {
-                return ResponseEntity.ok().body(students);
-            } else {
-                return ResponseEntity.notFound().build();
+        Set<StudentDTO> students = courseService.deleteCourseStudent(courseId, studentId);
 
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
+        if (students != null) {
+            return ResponseEntity.ok().body(students);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 }
