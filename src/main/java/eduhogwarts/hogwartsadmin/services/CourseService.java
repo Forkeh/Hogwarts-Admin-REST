@@ -36,7 +36,6 @@ public class CourseService {
     }
 
     public List<CourseDTO> getAllCourses() {
-        // TODO: Not working, something with the teacher
         return courseRepository.
                 findAll().
                 stream().
