@@ -11,6 +11,7 @@ import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import eduhogwarts.hogwartsadmin.utils.ModelMapper;
 import eduhogwarts.hogwartsadmin.utils.Utilities;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,8 @@ public class CourseService {
 
     public CourseDTO getCourse(Long id) {
 
-        return courseRepository.findById(id).map(modelMapper::courseModelToDTO).orElse(null);
+        return courseRepository.findById(id).map(modelMapper::courseModelToDTO).
+                orElseThrow(() -> new IllegalArgumentException("Course not found"));
     }
 
     public TeacherDTO getCourseTeacher(Long id) {
@@ -54,7 +56,7 @@ public class CourseService {
             Course currentCourse = course.get();
             return modelMapper.teacherModelToDTO(currentCourse.getTeacher());
         } else {
-            return null;
+            throw new IllegalArgumentException("Course not found");
         }
     }
 
@@ -64,7 +66,7 @@ public class CourseService {
         if (course.isPresent()) {
             return modelMapper.getStudentDTOS(course.get().getStudents());
         } else {
-            return null;
+            throw new IllegalArgumentException("Course not found");
         }
     }
 
@@ -92,7 +94,7 @@ public class CourseService {
             courseRepository.save(originalCourse);
             return modelMapper.courseModelToDTO(originalCourse);
         } else {
-            return null;
+            throw new IllegalArgumentException("Course not found");
         }
     }
 
@@ -139,7 +141,7 @@ public class CourseService {
             // Return updated course list
             return modelMapper.getStudentDTOS(course.getStudents());
         } else {
-            return null;
+            throw new IllegalArgumentException("Course or student not found");
         }
     }
 
@@ -153,7 +155,7 @@ public class CourseService {
 
             return courseToDelete;
         } else {
-            return null;
+            throw new IllegalArgumentException("Course not found");
         }
     }
 
@@ -167,7 +169,7 @@ public class CourseService {
             courseRepository.save(course);
             return course;
         } else {
-            return null;
+            throw new IllegalArgumentException("Course not found");
         }
     }
 
@@ -176,21 +178,24 @@ public class CourseService {
 
         if (original.isPresent()) {
             Course course = original.get();
+            // Get teacher id from map
             var teacherIdValue = teacherId.get("id");
 
             if (teacherIdValue == null) {
+                // Remove teacher from course
                 course.setTeacher(null);
             } else {
+                // Add teacher to course
                 Optional<Teacher> originalTeacher = teacherRepository.findById(Long.parseLong(teacherIdValue.toString()));
 
-                if (originalTeacher.isEmpty()) return null;
+                if (originalTeacher.isEmpty()) throw new IllegalArgumentException("Teacher not found");
 
                 course.setTeacher(originalTeacher.get());
             }
             courseRepository.save(course);
             return modelMapper.courseModelToDTO(original.get());
         }
-        return null;
+        throw new IllegalArgumentException("Course not found");
     }
 
     public Set<StudentDTO> deleteCourseStudent(Long courseId, Long studentId) {
@@ -207,14 +212,14 @@ public class CourseService {
             }
             return modelMapper.getStudentDTOS(course.getStudents());
         } else {
-            return null;
+            throw new IllegalArgumentException("Course or student not found");
         }
     }
 
     public CourseDTO addCourseStudents(Long id, List<Object> students) {
         Optional<Course> course = courseRepository.findById(id);
 
-        if (course.isEmpty()) return null;
+        if (course.isEmpty()) throw new IllegalArgumentException("Course not found");
 
         // Loop through students info
         for (Object studentInfo : students) {
@@ -247,7 +252,8 @@ public class CourseService {
 
     private Teacher findTeacherById(Long id) {
 
-        return teacherRepository.findById(id).orElse(null);
+        return teacherRepository.findById(id).
+                orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
     }
 
     private Set<Student> findStudentsByIds(Set<Long> studentIds) {

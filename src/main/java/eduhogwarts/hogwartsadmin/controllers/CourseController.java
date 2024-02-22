@@ -28,58 +28,36 @@ public class CourseController {
     public ResponseEntity<List<CourseDTO>> getAllCourses() {
         List<CourseDTO> courses = courseService.getAllCourses();
 
-        if (courses != null) {
-            return ResponseEntity.ok().body(courses);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
+        return ResponseEntity.ok().body(courses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseDTO> getCourse(@PathVariable Long id) {
         CourseDTO course = courseService.getCourse(id);
 
-        if (course != null) {
-            return ResponseEntity.ok().body(course);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(course);
     }
 
     @GetMapping("/{id}/teacher")
     public ResponseEntity<TeacherDTO> getCourseTeacher(@PathVariable Long id) {
         TeacherDTO teacher = courseService.getCourseTeacher(id);
 
-        if (teacher != null) {
-            return ResponseEntity.ok(teacher);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
+        return ResponseEntity.ok(teacher);
     }
 
     @GetMapping("/{id}/students")
     public ResponseEntity<Set<StudentDTO>> getCourseStudents(@PathVariable Long id) {
         Set<StudentDTO> students = courseService.getCourseStudents(id);
 
-        if (students != null) {
-            return ResponseEntity.ok(students);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(students);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CourseDTO> createCourse(@Valid @RequestBody CourseDTO course) {
-
         CourseDTO newCourse = courseService.createCourse(course);
-        if (newCourse != null) {
-            return ResponseEntity.ok().body(newCourse);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+
+        return ResponseEntity.ok().body(newCourse);
     }
 
     @PostMapping("/{id}/students")
@@ -87,11 +65,7 @@ public class CourseController {
 
         CourseDTO course = courseService.addCourseStudents(id, students);
 
-        if (course != null) {
-            return ResponseEntity.ok().body(course);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(course);
     }
 
     @PutMapping("/{id}")
@@ -99,12 +73,7 @@ public class CourseController {
 
         CourseDTO updateCourse = courseService.updateCourse(id, updatedCourse);
 
-        if (updateCourse != null) {
-            return ResponseEntity.ok().body(updateCourse);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
+        return ResponseEntity.ok().body(updateCourse);
     }
 
 //    @PutMapping("/{id}/teacher")
@@ -124,11 +93,7 @@ public class CourseController {
 
         Set<StudentDTO> students = courseService.addCourseStudent(courseId, studentId);
 
-        if (students != null) {
-            return ResponseEntity.ok().body(students);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(students);
     }
 
     @DeleteMapping("/{id}")
@@ -136,38 +101,22 @@ public class CourseController {
 
         CourseDTO courseToDelete = courseService.deleteCourse(id);
 
-        if (courseToDelete != null) {
-            return ResponseEntity.ok().body(courseToDelete);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
+        return ResponseEntity.ok().body(courseToDelete);
     }
 
     @DeleteMapping("/{id}/teacher")
     public ResponseEntity<?> deleteCourseTeacher(@PathVariable Long id) {
-        try {
-            Course course = courseService.deleteCourseTeacher(id);
 
-            if (course != null) {
-                return ResponseEntity.ok().body("Removed teacher from course: " + course.getSubject() + ", id: " + course.getId());
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong on the server");
-        }
+        Course course = courseService.deleteCourseTeacher(id);
+
+        return ResponseEntity.ok().body("Removed teacher from course: " + course.getSubject() + ", id: " + course.getId());
     }
 
     @PutMapping("/{id}/teacher")
     public ResponseEntity<CourseDTO> updateCourseTeacher(@PathVariable Long id, @RequestBody Map<String, Long> teacherId) {
         CourseDTO course = courseService.updateCourseTeacher(id, teacherId);
 
-        if (course != null) {
-            return ResponseEntity.ok().body(course);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(course);
     }
 
     @DeleteMapping("/{courseId}/students/{studentId}")
@@ -175,10 +124,6 @@ public class CourseController {
 
         Set<StudentDTO> students = courseService.deleteCourseStudent(courseId, studentId);
 
-        if (students != null) {
-            return ResponseEntity.ok().body(students);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(students);
     }
 }
