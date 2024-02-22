@@ -121,28 +121,27 @@ public class CourseService {
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 
         // check if course and student exist
-        if (originalCourse.isPresent() & originalStudent.isPresent()) {
-            Course course = originalCourse.get();
-            Student student = originalStudent.get();
-
-            // check if student is already in course
-            if (course.getStudents().contains(student))
-                // TODO: Exception handling (Global?)
-                throw new IllegalArgumentException("Student is already in course");
-
-            // if not, check if student is in the same school year as the course
-            if (isSchoolYearMatch(course.getSchoolYear(), student.getSchoolYear())) {
-                course.getStudents().add(student);
-                courseRepository.save(course);
-            } else {
-                // TODO: Exception handling (Global?)
-                throw new IllegalArgumentException("Student is not in the same school year as the course");
-            }
-            // Return updated course list
-            return modelMapper.getStudentDTOS(course.getStudents());
-        } else {
+        if (originalCourse.isEmpty() | originalStudent.isEmpty())
             throw new IllegalArgumentException("Course or student not found");
-        }
+
+        Course course = originalCourse.get();
+        Student student = originalStudent.get();
+
+        // check if student is already in course
+        if (course.getStudents().contains(student))
+            throw new IllegalArgumentException("Student is already in course");
+
+        // if not, check if student is in the same school year as the course
+        if (!isSchoolYearMatch(course.getSchoolYear(), student.getSchoolYear()))
+            throw new IllegalArgumentException("Student is not in the same school year as the course");
+
+        course.getStudents().add(student);
+        courseRepository.save(course);
+
+        // Return updated course list
+        return modelMapper.getStudentDTOS(course.getStudents());
+
+
     }
 
     public CourseDTO deleteCourse(Long id) {
