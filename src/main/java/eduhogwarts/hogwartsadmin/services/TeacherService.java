@@ -41,13 +41,13 @@ public class TeacherService {
     public TeacherDTO getTeacherById(Long id) {
         return teacherRepository.findById(id).
                 map(modelMapper::teacherModelToDTO).
-                orElse(null);
+                orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
     }
 
     public TeacherDTO createTeacher(TeacherDTO teacher) {
         House house = houseRepository.findByNameContainingIgnoreCase(teacher.getHouse());
 
-        if (house == null) return null;
+        if (house == null) throw new IllegalArgumentException("House not found");
 
         Teacher newTeacher = new Teacher(teacher.getName(), teacher.getDateOfBirth(), house, teacher.isHeadOfHouse(), teacher.getEmployment(), teacher.getEmploymentStart(), teacher.getEmploymentEnd());
         teacherRepository.save(newTeacher);

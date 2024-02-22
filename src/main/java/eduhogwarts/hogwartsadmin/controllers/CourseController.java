@@ -5,6 +5,7 @@ import eduhogwarts.hogwartsadmin.dto.StudentDTO;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.services.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,7 +72,7 @@ public class CourseController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CourseDTO> createCourse(@RequestBody CourseDTO course) {
+    public ResponseEntity<CourseDTO> createCourse(@Valid @RequestBody CourseDTO course) {
 
         CourseDTO newCourse = courseService.createCourse(course);
         if (newCourse != null) {
@@ -94,7 +95,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDTO> updateCourse(@RequestBody CourseDTO updatedCourse, @PathVariable Long id) {
+    public ResponseEntity<CourseDTO> updateCourse(@Valid @RequestBody CourseDTO updatedCourse, @PathVariable Long id) {
 
         CourseDTO updateCourse = courseService.updateCourse(id, updatedCourse);
 

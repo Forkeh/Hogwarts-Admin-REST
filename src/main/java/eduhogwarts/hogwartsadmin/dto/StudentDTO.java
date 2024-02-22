@@ -9,6 +9,7 @@ public class StudentDTO {
     @NotBlank(message = "Name is required")
     private String name;
     private LocalDate dateOfBirth;
+    @NotBlank(message = "House is required")
     private String house;
     private boolean prefect;
     private int enrollmentYear;

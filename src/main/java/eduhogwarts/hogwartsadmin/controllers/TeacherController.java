@@ -3,6 +3,7 @@ package eduhogwarts.hogwartsadmin.controllers;
 import eduhogwarts.hogwartsadmin.dto.TeacherDTO;
 import eduhogwarts.hogwartsadmin.models.EmpType;
 import eduhogwarts.hogwartsadmin.services.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,26 +31,18 @@ public class TeacherController {
     public ResponseEntity<TeacherDTO> getTeacher(@PathVariable Long id) {
         TeacherDTO teacher = teacherService.getTeacherById(id);
 
-        if (teacher != null) {
-            return ResponseEntity.ok().body(teacher);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(teacher);
     }
 
     @PostMapping
-    public ResponseEntity<TeacherDTO> createTeacher(@RequestBody TeacherDTO teacher) {
+    public ResponseEntity<TeacherDTO> createTeacher(@Valid @RequestBody TeacherDTO teacher) {
         TeacherDTO createdTeacher = teacherService.createTeacher(teacher);
 
-        if (createdTeacher != null) {
-            return ResponseEntity.ok().body(createdTeacher);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        return ResponseEntity.ok().body(createdTeacher);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TeacherDTO> updateTeacher(@PathVariable Long id, @RequestBody TeacherDTO updatedTeacher) {
+    public ResponseEntity<TeacherDTO> updateTeacher(@PathVariable Long id, @Valid @RequestBody TeacherDTO updatedTeacher) {
         TeacherDTO original = teacherService.updateTeacher(id, updatedTeacher);
 
         if (original != null) {

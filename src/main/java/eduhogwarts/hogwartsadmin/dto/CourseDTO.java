@@ -2,6 +2,7 @@ package eduhogwarts.hogwartsadmin.dto;
 
 import eduhogwarts.hogwartsadmin.models.Teacher;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
@@ -9,7 +10,9 @@ public class CourseDTO {
     private Long id;
     @NotBlank(message = "Subject is required")
     private String subject;
+    @NotNull(message = "School year is required")
     private int schoolYear;
+    @NotNull(message = "Current is required")
     private boolean current;
     private TeacherDTO teacher;
     private Set<StudentDTO> students;

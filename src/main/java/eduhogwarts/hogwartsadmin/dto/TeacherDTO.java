@@ -11,6 +11,7 @@ public class TeacherDTO {
     @NotBlank(message = "Name is required")
     private String name;
     private LocalDate dateOfBirth;
+    @NotBlank(message = "House is required")
     private String house;
     boolean headOfHouse;
     EmpType employment;
