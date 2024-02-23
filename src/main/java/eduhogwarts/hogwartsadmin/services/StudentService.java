@@ -34,8 +34,8 @@ public class StudentService {
 
     public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        return students.stream().
-                map(DTOMapper::studentModelToDTO).
+        return students.stream()
+                .map(DTOMapper::studentModelToDTO).
                 toList();
 
     }
@@ -47,9 +47,8 @@ public class StudentService {
     }
 
     public StudentDTO createStudent(StudentDTO student) {
-        House house = utilities.getHouseFromString(student.house());
-
-        if (house == null) throw new RuntimeException("House not found with name: " + student.house());
+        House house = utilities.getHouseFromString(student.house()).
+                orElseThrow(() -> new RuntimeException("House not found"));
 
         Student newStudent = new Student(student.name(), student.dateOfBirth(), house, student.prefect(), student.enrollmentYear(), student.graduationYear(), student.graduated(), student.schoolYear());
 
@@ -58,19 +57,18 @@ public class StudentService {
     }
 
     public StudentDTO updateStudent(Long id, StudentDTO student) {
-        Optional<Student> original = studentRepository.findById(id);
-        House house = utilities.getHouseFromString(student.house());
+        Student original = studentRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // If the student or house is not found, throw an exception
-        if (original.isEmpty() | house == null) throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.house() + " respectively");
+        House house = utilities.getHouseFromString(student.house()).
+                orElseThrow(() -> new RuntimeException("House not found"));
 
         // Update the student fields
-        Student updatedStudent = updateStudentFields(student, original.get(), house);
+        Student updatedStudent = updateStudentFields(student, original, house);
 
         // Save and return updated student
         studentRepository.save(updatedStudent);
         return DTOMapper.studentModelToDTO(updatedStudent);
-
     }
 
     private static Student updateStudentFields(StudentDTO student, Student originalStudent, House house) {
@@ -98,7 +96,8 @@ public class StudentService {
 
         // Remove the student from all courses
         for (Course course : courses) {
-            course.getStudents().remove(studentToDelete);
+            course.getStudents()
+                    .remove(studentToDelete);
             courseRepository.save(course);
         }
 
@@ -123,7 +122,8 @@ public class StudentService {
                 if (key.equals("house")) value = utilities.getHouseFromString((String) value);
 
                 // If the field is graduationYear, set the student to graduated
-                if (key.equals("graduationYear")) student.get().setGraduated(true);
+                if (key.equals("graduationYear")) student.get()
+                        .setGraduated(true);
 
                 // Set the field to accessible, set the value, and set the field back to not accessible
                 field.setAccessible(true);

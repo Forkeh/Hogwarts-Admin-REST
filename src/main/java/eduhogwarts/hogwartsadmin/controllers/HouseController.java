@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/houses")
@@ -21,25 +22,18 @@ public class HouseController {
     }
 
     @GetMapping
-    public List<House> getAllHouses() {
-        return houseService.getAllHouses();
+    public ResponseEntity<List<House>> getAllHouses() {
+
+        List<House> houses = houseService.getAllHouses();
+
+        return ResponseEntity.ok().body(houses);
     }
 
     @GetMapping("/{name}")
     public ResponseEntity<House> getHouseByName(@PathVariable String name) throws Exception {
-        try {
-            House house = houseService.getHouseByName(name);
 
-            if (house != null) {
-                return ResponseEntity.ok(house);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+        Optional<House> house = houseService.getHouseByName(name);
 
-
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-
+        return ResponseEntity.of(house);
     }
 }
