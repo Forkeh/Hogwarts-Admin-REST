@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 // TODO: Return Optional instead?
-// TODO: Exception handling
 @Service
 public class TeacherService {
 

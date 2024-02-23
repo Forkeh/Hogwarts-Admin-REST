@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Return ResponseEntity.of instead
+// TODO: Return ResponseEntity.of instead?
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {

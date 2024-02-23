@@ -52,10 +52,7 @@ public class StudentService {
         if (house == null) throw new RuntimeException("House not found with name: " + student.house());
 
         Student newStudent = new Student(student.name(), student.dateOfBirth(), house, student.prefect(), student.enrollmentYear(), student.graduationYear(), student.graduated(), student.schoolYear());
-//        if (student.getFullName() != null) {
-//        } else {
-//            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
-//        }
+
         studentRepository.save(newStudent);
         return DTOMapper.studentModelToDTO(newStudent);
     }
