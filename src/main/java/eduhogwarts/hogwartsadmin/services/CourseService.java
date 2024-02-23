@@ -9,9 +9,8 @@ import eduhogwarts.hogwartsadmin.models.Teacher;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
-import eduhogwarts.hogwartsadmin.utils.ModelMapper;
+import eduhogwarts.hogwartsadmin.utils.DTOMapper;
 import eduhogwarts.hogwartsadmin.utils.Utilities;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,27 +24,27 @@ public class CourseService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final Utilities utilities;
-    private final ModelMapper modelMapper;
+    private final DTOMapper DTOMapper;
 
-    public CourseService(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, Utilities utilities, ModelMapper modelMapper) {
+    public CourseService(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, Utilities utilities, DTOMapper DTOMapper) {
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.utilities = utilities;
-        this.modelMapper = modelMapper;
+        this.DTOMapper = DTOMapper;
     }
 
     public List<CourseDTO> getAllCourses() {
         return courseRepository.
                 findAll().
                 stream().
-                map(modelMapper::courseModelToDTO).
+                map(DTOMapper::courseModelToDTO).
                 toList();
     }
 
     public CourseDTO getCourse(Long id) {
 
-        return courseRepository.findById(id).map(modelMapper::courseModelToDTO).
+        return courseRepository.findById(id).map(DTOMapper::courseModelToDTO).
                 orElseThrow(() -> new IllegalArgumentException("Course not found"));
     }
 
@@ -54,7 +53,7 @@ public class CourseService {
 
         if (course.isPresent()) {
             Course currentCourse = course.get();
-            return modelMapper.teacherModelToDTO(currentCourse.getTeacher());
+            return DTOMapper.teacherModelToDTO(currentCourse.getTeacher());
         } else {
             throw new IllegalArgumentException("Course not found");
         }
@@ -64,19 +63,19 @@ public class CourseService {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
-            return modelMapper.getStudentDTOS(course.get().getStudents());
+            return DTOMapper.getStudentDTOS(course.get().getStudents());
         } else {
             throw new IllegalArgumentException("Course not found");
         }
     }
 
     public CourseDTO createCourse(CourseDTO courseDTO) {
-        Teacher teacher = findTeacherById(courseDTO.getTeacher().getId());
-        Set<Student> students = findStudentsByIds(courseDTO.getStudents().stream().map(StudentDTO::id).collect(Collectors.toSet()));
-        Course newCourse = new Course(courseDTO.getSubject(), courseDTO.getSchoolYear(), courseDTO.isCurrent(), teacher, students);
+        Teacher teacher = findTeacherById(courseDTO.teacher().id());
+        Set<Student> students = findStudentsByIds(courseDTO.students().stream().map(StudentDTO::id).collect(Collectors.toSet()));
+        Course newCourse = new Course(courseDTO.subject(), courseDTO.schoolYear(), courseDTO.current(), teacher, students);
 
         courseRepository.save(newCourse);
-        return modelMapper.courseModelToDTO(newCourse);
+        return DTOMapper.courseModelToDTO(newCourse);
     }
 
 
@@ -92,7 +91,7 @@ public class CourseService {
 
             // Save and return updated course
             courseRepository.save(originalCourse);
-            return modelMapper.courseModelToDTO(originalCourse);
+            return DTOMapper.courseModelToDTO(originalCourse);
         } else {
             throw new IllegalArgumentException("Course not found");
         }
@@ -139,7 +138,7 @@ public class CourseService {
         courseRepository.save(course);
 
         // Return updated course list
-        return modelMapper.getStudentDTOS(course.getStudents());
+        return DTOMapper.getStudentDTOS(course.getStudents());
 
 
     }
@@ -148,7 +147,7 @@ public class CourseService {
         Optional<Course> course = courseRepository.findById(id);
 
         if (course.isPresent()) {
-            CourseDTO courseToDelete = modelMapper.courseModelToDTO(course.get());
+            CourseDTO courseToDelete = DTOMapper.courseModelToDTO(course.get());
 
             courseRepository.deleteById(id);
 
@@ -192,7 +191,7 @@ public class CourseService {
                 course.setTeacher(originalTeacher.get());
             }
             courseRepository.save(course);
-            return modelMapper.courseModelToDTO(original.get());
+            return DTOMapper.courseModelToDTO(original.get());
         }
         throw new IllegalArgumentException("Course not found");
     }
@@ -209,7 +208,7 @@ public class CourseService {
                 course.getStudents().remove(student);
                 courseRepository.save(course);
             }
-            return modelMapper.getStudentDTOS(course.getStudents());
+            return DTOMapper.getStudentDTOS(course.getStudents());
         } else {
             throw new IllegalArgumentException("Course or student not found");
         }
@@ -246,7 +245,7 @@ public class CourseService {
                 }
             }
         }
-        return modelMapper.courseModelToDTO(course.get());
+        return DTOMapper.courseModelToDTO(course.get());
     }
 
     private Teacher findTeacherById(Long id) {

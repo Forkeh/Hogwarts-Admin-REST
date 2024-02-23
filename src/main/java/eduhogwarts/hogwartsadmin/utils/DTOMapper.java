@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class ModelMapper {
+public class DTOMapper {
 
     public StudentDTO studentModelToDTO(Student student) {
         return new StudentDTO(student.getId(), student.getFullName(), student.getDateOfBirth(), student.getHouse().getName(), student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());

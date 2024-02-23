@@ -5,9 +5,8 @@ import eduhogwarts.hogwartsadmin.models.Course;
 import eduhogwarts.hogwartsadmin.models.House;
 import eduhogwarts.hogwartsadmin.models.Student;
 import eduhogwarts.hogwartsadmin.repositories.CourseRepository;
-import eduhogwarts.hogwartsadmin.repositories.HouseRepository;
 import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
-import eduhogwarts.hogwartsadmin.utils.ModelMapper;
+import eduhogwarts.hogwartsadmin.utils.DTOMapper;
 import eduhogwarts.hogwartsadmin.utils.Utilities;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -16,7 +15,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -24,28 +22,28 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final Utilities utilities;
-    private final ModelMapper modelMapper;
+    private final DTOMapper DTOMapper;
 
     // TODO: Refactor exception handling
 
-    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, Utilities utilities, ModelMapper modelMapper) {
+    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, Utilities utilities, DTOMapper DTOMapper) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
         this.utilities = utilities;
-        this.modelMapper = modelMapper;
+        this.DTOMapper = DTOMapper;
     }
 
     public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return students.stream().
-                map(modelMapper::studentModelToDTO).
+                map(DTOMapper::studentModelToDTO).
                 toList();
 
     }
 
     public StudentDTO getStudent(Long id) {
         return studentRepository.findById(id).
-                map(modelMapper::studentModelToDTO).
+                map(DTOMapper::studentModelToDTO).
                 orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
@@ -60,7 +58,7 @@ public class StudentService {
 //            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
 //        }
         studentRepository.save(newStudent);
-        return modelMapper.studentModelToDTO(newStudent);
+        return DTOMapper.studentModelToDTO(newStudent);
     }
 
     public StudentDTO updateStudent(Long id, StudentDTO student) {
@@ -74,7 +72,7 @@ public class StudentService {
 
             // Save and return updated student
             studentRepository.save(updatedStudent);
-            return modelMapper.studentModelToDTO(updatedStudent);
+            return DTOMapper.studentModelToDTO(updatedStudent);
         } else {
             throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.house() + " respectively");
         }
@@ -110,7 +108,7 @@ public class StudentService {
 
             // Delete the student
             studentRepository.deleteById(id);
-            return modelMapper.studentModelToDTO(studentToDelete);
+            return DTOMapper.studentModelToDTO(studentToDelete);
         } else {
             throw new RuntimeException("Student not found with id: " + id);
         }
@@ -140,7 +138,7 @@ public class StudentService {
                 }
             });
             studentRepository.save(student.get());
-            return modelMapper.studentModelToDTO(student.get());
+            return DTOMapper.studentModelToDTO(student.get());
         } else {
             throw new RuntimeException("Student not found with id: " + id);
         }
