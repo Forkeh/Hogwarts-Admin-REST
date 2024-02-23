@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findByStudentsId(Long id);
+    List<Course> findByTeacherId(Long id);
 }

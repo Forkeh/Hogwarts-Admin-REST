@@ -57,33 +57,32 @@ public class TeacherService {
         Teacher teacher = teacherRepository.findById(id).orElse(null);
         House house = houseRepository.findByNameContainingIgnoreCase(updatedTeacher.house());
 
-        if (teacher != null && house != null) {
-            BeanUtils.copyProperties(updatedTeacher, teacher, "id", "house");
-            // Have to set house object separately
-            teacher.setHouse(house);
-            teacherRepository.save(teacher);
-            return DTOMapper.teacherModelToDTO(teacher);
-        } else {
-            return null;
-        }
+        if (teacher == null | house == null) throw new IllegalArgumentException("Teacher or house not found");
+
+        // Copy all properties except id and house
+        BeanUtils.copyProperties(updatedTeacher, teacher, "id", "house");
+        // Have to set house object separately
+        teacher.setHouse(house);
+
+        teacherRepository.save(teacher);
+        return DTOMapper.teacherModelToDTO(teacher);
     }
 
     public TeacherDTO deleteTeacher(Long id) {
         Teacher teacher = teacherRepository.findById(id).orElse(null);
-        if (teacher != null) {
-            List<Course> courses = courseRepository.findAll();
 
-            for (Course course : courses) {
-                if (course.getTeacher() != null && course.getTeacher().getId().equals(id)) {
-                    course.setTeacher(null);
-                    courseRepository.save(course);
-                }
+        if (teacher == null) throw new IllegalArgumentException("Teacher not found");
+
+        List<Course> courses = courseRepository.findAll();
+
+        for (Course course : courses) {
+            if (course.getTeacher() != null && course.getTeacher().getId().equals(id)) {
+                course.setTeacher(null);
+                courseRepository.save(course);
             }
-            teacherRepository.delete(teacher);
-            return DTOMapper.teacherModelToDTO(teacher);
-        } else {
-            return null;
         }
+        teacherRepository.delete(teacher);
+        return DTOMapper.teacherModelToDTO(teacher);
     }
 
     public TeacherDTO patchTeacherHeadOfHouse(Long id) {
