@@ -50,11 +50,11 @@ public class StudentService {
     }
 
     public StudentDTO createStudent(StudentDTO student) {
-        House house = utilities.getHouseFromString(student.getHouse());
+        House house = utilities.getHouseFromString(student.house());
 
-        if (house == null) throw new RuntimeException("House not found with name: " + student.getHouse());
+        if (house == null) throw new RuntimeException("House not found with name: " + student.house());
 
-        Student newStudent = new Student(student.getName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
+        Student newStudent = new Student(student.name(), student.dateOfBirth(), house, student.prefect(), student.enrollmentYear(), student.graduationYear(), student.graduated(), student.schoolYear());
 //        if (student.getFullName() != null) {
 //        } else {
 //            newStudent = new Student(student.getFirstName(), student.getMiddleName(), student.getLastName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
@@ -65,7 +65,7 @@ public class StudentService {
 
     public StudentDTO updateStudent(Long id, StudentDTO student) {
         Optional<Student> original = studentRepository.findById(id);
-        House house = utilities.getHouseFromString(student.getHouse());
+        House house = utilities.getHouseFromString(student.house());
 
         // TODO: Move exception to here
         // TODO: refactor to use existsById
@@ -76,21 +76,21 @@ public class StudentService {
             studentRepository.save(updatedStudent);
             return modelMapper.studentModelToDTO(updatedStudent);
         } else {
-            throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.getHouse() + " respectively");
+            throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.house() + " respectively");
         }
     }
 
     private static Student updateStudentFields(StudentDTO student, Student originalStudent, House house) {
 
         //Update original student
-        originalStudent.setFullName(student.getName());
-        originalStudent.setDateOfBirth(student.getDateOfBirth());
+        originalStudent.setFullName(student.name());
+        originalStudent.setDateOfBirth(student.dateOfBirth());
         originalStudent.setHouse(house);
-        originalStudent.setPrefect(student.isPrefect());
-        originalStudent.setEnrollmentYear(student.getEnrollmentYear());
-        originalStudent.setGraduationYear(student.getGraduationYear());
-        originalStudent.setGraduated(student.isGraduated());
-        originalStudent.setSchoolYear(student.getSchoolYear());
+        originalStudent.setPrefect(student.prefect());
+        originalStudent.setEnrollmentYear(student.enrollmentYear());
+        originalStudent.setGraduationYear(student.graduationYear());
+        originalStudent.setGraduated(student.graduated());
+        originalStudent.setSchoolYear(student.schoolYear());
         return originalStudent;
     }
 

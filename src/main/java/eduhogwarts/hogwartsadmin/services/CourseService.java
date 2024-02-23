@@ -72,7 +72,7 @@ public class CourseService {
 
     public CourseDTO createCourse(CourseDTO courseDTO) {
         Teacher teacher = findTeacherById(courseDTO.getTeacher().getId());
-        Set<Student> students = findStudentsByIds(courseDTO.getStudents().stream().map(StudentDTO::getId).collect(Collectors.toSet()));
+        Set<Student> students = findStudentsByIds(courseDTO.getStudents().stream().map(StudentDTO::id).collect(Collectors.toSet()));
         Course newCourse = new Course(courseDTO.getSubject(), courseDTO.getSchoolYear(), courseDTO.isCurrent(), teacher, students);
 
         courseRepository.save(newCourse);
