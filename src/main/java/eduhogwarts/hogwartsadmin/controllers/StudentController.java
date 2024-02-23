@@ -1,17 +1,12 @@
 package eduhogwarts.hogwartsadmin.controllers;
 
 import eduhogwarts.hogwartsadmin.dto.StudentDTO;
-import eduhogwarts.hogwartsadmin.models.Student;
-import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.services.StudentService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/students")
