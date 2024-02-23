@@ -51,26 +51,23 @@ public class CourseService {
     public TeacherDTO getCourseTeacher(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
-        if (course.isPresent()) {
-            Course currentCourse = course.get();
-            return DTOMapper.teacherModelToDTO(currentCourse.getTeacher());
-        } else {
-            throw new IllegalArgumentException("Course not found");
-        }
+        if (course.isEmpty()) throw new IllegalArgumentException("Course not found");
+
+        return DTOMapper.teacherModelToDTO(course.get().getTeacher());
+
     }
 
     public Set<StudentDTO> getCourseStudents(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
-        if (course.isPresent()) {
-            return DTOMapper.getStudentDTOS(course.get().getStudents());
-        } else {
-            throw new IllegalArgumentException("Course not found");
-        }
+        if (course.isEmpty()) throw new IllegalArgumentException("Course not found");
+
+        return DTOMapper.getStudentDTOS(course.get().getStudents());
+
     }
 
     public CourseDTO createCourse(CourseDTO courseDTO) {
-        Teacher teacher = findTeacherById(courseDTO.teacher().id());
+        Teacher teacher = findTeacherById(courseDTO.teacher().id()).orElse(null);
         Set<Student> students = findStudentsByIds(courseDTO.students().stream().map(StudentDTO::id).collect(Collectors.toSet()));
         Course newCourse = new Course(courseDTO.subject(), courseDTO.schoolYear(), courseDTO.current(), teacher, students);
 
@@ -82,19 +79,15 @@ public class CourseService {
     public CourseDTO updateCourse(Long id, CourseDTO updatedCourse) {
         Optional<Course> original = courseRepository.findById(id);
 
-        if (original.isPresent()) {
-            Course originalCourse = original.get();
+        if (original.isEmpty()) throw new IllegalArgumentException("Course not found");
+        Course originalCourse = original.get();
 
             //Update original course
             BeanUtils.copyProperties(updatedCourse, originalCourse, "id");
 
-
             // Save and return updated course
             courseRepository.save(originalCourse);
             return DTOMapper.courseModelToDTO(originalCourse);
-        } else {
-            throw new IllegalArgumentException("Course not found");
-        }
     }
 
 //    public CourseDTO updateCourseTeacher(Long id, TeacherDTO teacher) {
@@ -146,72 +139,70 @@ public class CourseService {
     public CourseDTO deleteCourse(Long id) {
         Optional<Course> course = courseRepository.findById(id);
 
-        if (course.isPresent()) {
-            CourseDTO courseToDelete = DTOMapper.courseModelToDTO(course.get());
+        if (course.isEmpty()) throw new IllegalArgumentException("Course not found");
+
+        CourseDTO courseToDelete = DTOMapper.courseModelToDTO(course.get());
 
             courseRepository.deleteById(id);
 
             return courseToDelete;
-        } else {
-            throw new IllegalArgumentException("Course not found");
-        }
     }
 
     public Course deleteCourseTeacher(Long id) {
         Optional<Course> original = courseRepository.findById(id);
 
-        if (original.isPresent()) {
-            Course course = original.get();
-            course.setTeacher(null);
+        if (original.isEmpty()) throw new IllegalArgumentException("Course not found");
 
-            courseRepository.save(course);
-            return course;
-        } else {
-            throw new IllegalArgumentException("Course not found");
-        }
+        Course course = original.get();
+        course.setTeacher(null);
+
+        courseRepository.save(course);
+        return course;
+
     }
 
     public CourseDTO updateCourseTeacher(Long id, Map<String, Long> teacherId) {
         Optional<Course> original = courseRepository.findById(id);
 
-        if (original.isPresent()) {
-            Course course = original.get();
-            // Get teacher id from map
-            var teacherIdValue = teacherId.get("id");
+        if (original.isEmpty()) throw new IllegalArgumentException("Course not found");
 
-            if (teacherIdValue == null) {
-                // Remove teacher from course
-                course.setTeacher(null);
-            } else {
-                // Add teacher to course
-                Optional<Teacher> originalTeacher = teacherRepository.findById(Long.parseLong(teacherIdValue.toString()));
+        Course course = original.get();
 
-                if (originalTeacher.isEmpty()) throw new IllegalArgumentException("Teacher not found");
+        // Get teacher id from map
+        var teacherIdValue = teacherId.get("id");
 
-                course.setTeacher(originalTeacher.get());
-            }
-            courseRepository.save(course);
-            return DTOMapper.courseModelToDTO(original.get());
+        if (teacherIdValue == null) {
+            // Remove teacher from course
+            course.setTeacher(null);
+        } else {
+            // Add teacher to course
+            Optional<Teacher> originalTeacher = teacherRepository.findById(Long.parseLong(teacherIdValue.toString()));
+
+            if (originalTeacher.isEmpty()) throw new IllegalArgumentException("Teacher not found");
+
+            course.setTeacher(originalTeacher.get());
         }
-        throw new IllegalArgumentException("Course not found");
+
+        courseRepository.save(course);
+        return DTOMapper.courseModelToDTO(original.get());
+
+
     }
 
     public Set<StudentDTO> deleteCourseStudent(Long courseId, Long studentId) {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 
-        if (originalCourse.isPresent() & originalStudent.isPresent()) {
-            Course course = originalCourse.get();
-            Student student = originalStudent.get();
+        if (originalCourse.isEmpty() | originalStudent.isEmpty()) throw new IllegalArgumentException("Course or student not found");
+        Course course = originalCourse.get();
+        Student student = originalStudent.get();
 
-            if (course.getStudents().contains(student)) {
-                course.getStudents().remove(student);
-                courseRepository.save(course);
-            }
-            return DTOMapper.getStudentDTOS(course.getStudents());
-        } else {
-            throw new IllegalArgumentException("Course or student not found");
+        // Remove student from course if they are in the course
+        if (course.getStudents().contains(student)) {
+            course.getStudents().remove(student);
+            courseRepository.save(course);
         }
+        return DTOMapper.getStudentDTOS(course.getStudents());
     }
 
     public CourseDTO addCourseStudents(Long id, List<Object> students) {
@@ -248,10 +239,10 @@ public class CourseService {
         return DTOMapper.courseModelToDTO(course.get());
     }
 
-    private Teacher findTeacherById(Long id) {
+    private Optional<Teacher> findTeacherById(Long id) {
 
-        return teacherRepository.findById(id).
-                orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
+        return teacherRepository.findById(id);
+
     }
 
     private Set<Student> findStudentsByIds(Set<Long> studentIds) {
