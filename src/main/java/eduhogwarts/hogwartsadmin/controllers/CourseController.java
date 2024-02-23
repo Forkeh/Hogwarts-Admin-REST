@@ -61,7 +61,7 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/students")
-    public ResponseEntity<CourseDTO> addCourseStudents(@PathVariable Long id, @RequestBody List<Object> students) {
+    public ResponseEntity<CourseDTO> addCourseStudents(@PathVariable Long id, @RequestBody List<Map<String, Object>> students) {
 
         CourseDTO course = courseService.addCourseStudents(id, students);
 

@@ -86,20 +86,18 @@ public class TeacherService {
     }
 
     public TeacherDTO patchTeacherHeadOfHouse(Long id) {
-        Teacher teacher = teacherRepository.findById(id).orElse(null);
+        Teacher teacher = teacherRepository.findById(id).
+                orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
 
-        if (teacher != null) {
-            // toggle head of house
-            teacher.setHeadOfHouse(!teacher.isHeadOfHouse());
-            teacherRepository.save(teacher);
-            return DTOMapper.teacherModelToDTO(teacher);
-        } else {
-            return null;
-        }
+        // toggle head of house
+        teacher.setHeadOfHouse(!teacher.isHeadOfHouse());
+        teacherRepository.save(teacher);
+        return DTOMapper.teacherModelToDTO(teacher);
     }
 
     public TeacherDTO patchTeacherEmploymentEnd(Long id, Map<String, LocalDate> employmentEnd) {
-        Teacher teacher = teacherRepository.findById(id).orElse(null);
+        Teacher teacher = teacherRepository.findById(id).
+                orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
 
         if (teacher != null) {
             teacher.setEmploymentEnd(employmentEnd.get("employmentEnd"));

@@ -11,6 +11,7 @@ import eduhogwarts.hogwartsadmin.repositories.StudentRepository;
 import eduhogwarts.hogwartsadmin.repositories.TeacherRepository;
 import eduhogwarts.hogwartsadmin.utils.DTOMapper;
 import eduhogwarts.hogwartsadmin.utils.Utilities;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -82,12 +83,12 @@ public class CourseService {
         if (original.isEmpty()) throw new IllegalArgumentException("Course not found");
         Course originalCourse = original.get();
 
-            //Update original course
-            BeanUtils.copyProperties(updatedCourse, originalCourse, "id");
+        //Update original course
+        BeanUtils.copyProperties(updatedCourse, originalCourse, "id");
 
-            // Save and return updated course
-            courseRepository.save(originalCourse);
-            return DTOMapper.courseModelToDTO(originalCourse);
+        // Save and return updated course
+        courseRepository.save(originalCourse);
+        return DTOMapper.courseModelToDTO(originalCourse);
     }
 
 //    public CourseDTO updateCourseTeacher(Long id, TeacherDTO teacher) {
@@ -121,11 +122,11 @@ public class CourseService {
 
         // check if student is already in course
         if (course.getStudents().contains(student))
-            throw new IllegalArgumentException("Student is already in course");
+            throw new IllegalArgumentException("Student " + student.getFirstName() + " is already in course");
 
         // if not, check if student is in the same school year as the course
         if (!isSchoolYearMatch(course.getSchoolYear(), student.getSchoolYear()))
-            throw new IllegalArgumentException("Student is not in the same school year as the course");
+            throw new IllegalArgumentException("Student " + student.getFirstName() + " is not in the same school year as the course");
 
         course.getStudents().add(student);
         courseRepository.save(course);
@@ -143,9 +144,9 @@ public class CourseService {
 
         CourseDTO courseToDelete = DTOMapper.courseModelToDTO(course.get());
 
-            courseRepository.deleteById(id);
+        courseRepository.deleteById(id);
 
-            return courseToDelete;
+        return courseToDelete;
     }
 
     public Course deleteCourseTeacher(Long id) {
@@ -193,7 +194,8 @@ public class CourseService {
         Optional<Course> originalCourse = courseRepository.findById(courseId);
         Optional<Student> originalStudent = studentRepository.findById(studentId);
 
-        if (originalCourse.isEmpty() | originalStudent.isEmpty()) throw new IllegalArgumentException("Course or student not found");
+        if (originalCourse.isEmpty() | originalStudent.isEmpty())
+            throw new IllegalArgumentException("Course or student not found");
         Course course = originalCourse.get();
         Student student = originalStudent.get();
 
@@ -205,48 +207,48 @@ public class CourseService {
         return DTOMapper.getStudentDTOS(course.getStudents());
     }
 
-    public CourseDTO addCourseStudents(Long id, List<Object> students) {
-        Optional<Course> course = courseRepository.findById(id);
+    @Transactional
+    public CourseDTO addCourseStudents(Long id, List<Map<String, Object>> students) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
-        if (course.isEmpty()) throw new IllegalArgumentException("Course not found");
+        // Iterate through students and add them to course
+        for (Map<String, Object> studentInfo : students) {
+            // Add student to course by id
+            if (studentInfo.containsKey("id")) {
 
-        // Loop through students info
-        for (Object studentInfo : students) {
+                Long studentId = Long.parseLong(studentInfo.get("id").toString());
+                addStudentToCourseById(id, studentId);
 
-            // Create a map from the student info (keys are "id" and/or "name")
-            @SuppressWarnings("unchecked")
-            Map<String, Object> studentMap = (Map<String, Object>) studentInfo;
+                // Add student to course by name
+            } else if (studentInfo.containsKey("name")) {
 
-            // Loop through the keys in the map
-            for (String key : studentMap.keySet()) {
-
-                // If the key is "id", find the student by id and add them to the course
-                if (key.equals("id")) {
-                    // Parse the id from the map and find the student by id
-                    Long studentId = Long.parseLong(studentMap.get(key).toString());
-                    Optional<Student> student = studentRepository.findById(studentId);
-                    student.ifPresent(foundStudent -> addCourseStudent(id, foundStudent.getId()));
-                }
-
-                // If the key is "name", split the name and find the student by first or last name and add them to the course
-                else if (key.equals("name")) {
-                    String[] nameParts = utilities.nameSplitter((String) studentMap.get(key));
-                    Optional<Student> student = studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(nameParts[0], nameParts[nameParts.length - 1]);
-                    student.ifPresent(foundStudent -> addCourseStudent(id, foundStudent.getId()));
-                }
+                String[] nameParts = utilities.nameSplitter((String) studentInfo.get("name"));
+                addStudentToCourseByName(id, nameParts);
             }
         }
-        return DTOMapper.courseModelToDTO(course.get());
+
+        return DTOMapper.courseModelToDTO(course);
+    }
+
+    private void addStudentToCourseById(Long courseId, Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        addCourseStudent(courseId, student.getId());
+    }
+
+    private void addStudentToCourseByName(Long courseId, String[] nameParts) {
+        Student student = studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(nameParts[0], nameParts[nameParts.length - 1])
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        addCourseStudent(courseId, student.getId());
     }
 
     private Optional<Teacher> findTeacherById(Long id) {
-
         return teacherRepository.findById(id);
 
     }
 
     private Set<Student> findStudentsByIds(Set<Long> studentIds) {
-
         return new HashSet<>(studentRepository.findAllById(studentIds));
     }
 
