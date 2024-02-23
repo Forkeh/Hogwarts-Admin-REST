@@ -24,7 +24,6 @@ public class StudentService {
     private final Utilities utilities;
     private final DTOMapper DTOMapper;
 
-    // TODO: Refactor exception handling
 
     public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, Utilities utilities, DTOMapper DTOMapper) {
         this.studentRepository = studentRepository;
@@ -65,22 +64,20 @@ public class StudentService {
         Optional<Student> original = studentRepository.findById(id);
         House house = utilities.getHouseFromString(student.house());
 
-        // TODO: Move exception to here
-        // TODO: refactor to use existsById
-        if (original.isPresent() && house != null) {
-            Student updatedStudent = updateStudentFields(student, original.get(), house);
+        // If the student or house is not found, throw an exception
+        if (original.isEmpty() | house == null) throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.house() + " respectively");
 
-            // Save and return updated student
-            studentRepository.save(updatedStudent);
-            return DTOMapper.studentModelToDTO(updatedStudent);
-        } else {
-            throw new RuntimeException("Student or house not found with id: " + id + " or name: " + student.house() + " respectively");
-        }
+        // Update the student fields
+        Student updatedStudent = updateStudentFields(student, original.get(), house);
+
+        // Save and return updated student
+        studentRepository.save(updatedStudent);
+        return DTOMapper.studentModelToDTO(updatedStudent);
+
     }
 
     private static Student updateStudentFields(StudentDTO student, Student originalStudent, House house) {
 
-        //Update original student
         originalStudent.setFullName(student.name());
         originalStudent.setDateOfBirth(student.dateOfBirth());
         originalStudent.setHouse(house);
@@ -92,56 +89,54 @@ public class StudentService {
         return originalStudent;
     }
 
+    // TODO: Use cascade on entity when deleting?
     public StudentDTO deleteStudent(Long id) {
         Optional<Student> student = studentRepository.findById(id);
 
-        if (student.isPresent()) {
-            Student studentToDelete = student.get();
-            // Find all courses that the student is enrolled in
-            List<Course> courses = courseRepository.findByStudentsId(id);
+        if (student.isEmpty()) throw new RuntimeException("Student not found with id: " + id);
 
-            // Remove the student from all courses
-            for (Course course : courses) {
-                course.getStudents().remove(studentToDelete);
-                courseRepository.save(course);
-            }
+        Student studentToDelete = student.get();
+        // Find all courses that the student is enrolled in
+        List<Course> courses = courseRepository.findByStudentsId(id);
 
-            // Delete the student
-            studentRepository.deleteById(id);
-            return DTOMapper.studentModelToDTO(studentToDelete);
-        } else {
-            throw new RuntimeException("Student not found with id: " + id);
+        // Remove the student from all courses
+        for (Course course : courses) {
+            course.getStudents().remove(studentToDelete);
+            courseRepository.save(course);
         }
+
+        // Delete the student
+        studentRepository.deleteById(id);
+        return DTOMapper.studentModelToDTO(studentToDelete);
+
     }
 
     public StudentDTO patchStudentFields(Long id, Map<String, Object> fields) {
         Optional<Student> student = studentRepository.findById(id);
 
-        // TODO: Move exception to here
-        if (student.isPresent()) {
-            // Loop through all fields
-            fields.forEach((key, value) -> {
-                // Use reflection to get field from student and set it to the new value
-                Field field = ReflectionUtils.findField(Student.class, key);
+        if (student.isEmpty()) throw new RuntimeException("Student not found with id: " + id);
 
-                if (field != null) {
-                    // If the field is house, get the house from the string
-                    if (key.equals("house")) value = utilities.getHouseFromString((String) value);
+        // Loop through all fields
+        fields.forEach((key, value) -> {
+            // Use reflection to get field from student and set it to the new value
+            Field field = ReflectionUtils.findField(Student.class, key);
 
-                    // If the field is graduationYear, set the student to graduated
-                    if (key.equals("graduationYear")) student.get().setGraduated(true);
+            if (field != null) {
+                // If the field is house, get the house from the string
+                if (key.equals("house")) value = utilities.getHouseFromString((String) value);
 
-                    // Set the field to accessible, set the value, and set the field back to not accessible
-                    field.setAccessible(true);
-                    ReflectionUtils.setField(field, student.get(), value);
-                    field.setAccessible(false);
-                }
-            });
-            studentRepository.save(student.get());
-            return DTOMapper.studentModelToDTO(student.get());
-        } else {
-            throw new RuntimeException("Student not found with id: " + id);
-        }
+                // If the field is graduationYear, set the student to graduated
+                if (key.equals("graduationYear")) student.get().setGraduated(true);
+
+                // Set the field to accessible, set the value, and set the field back to not accessible
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, student.get(), value);
+                field.setAccessible(false);
+            }
+        });
+
+        studentRepository.save(student.get());
+        return DTOMapper.studentModelToDTO(student.get());
     }
 }
 
