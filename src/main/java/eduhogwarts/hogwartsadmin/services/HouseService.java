@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// TODO: Exception handling
 @Service
 public class HouseService {
     private final HouseRepository houseRepository;

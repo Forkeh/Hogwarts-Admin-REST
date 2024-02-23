@@ -2,6 +2,7 @@ package eduhogwarts.hogwartsadmin.dto;
 
 import eduhogwarts.hogwartsadmin.models.EmpType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ public class TeacherDTO {
     private Long id;
     @NotBlank(message = "Name is required")
     private String name;
+    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
     @NotBlank(message = "House is required")
     private String house;

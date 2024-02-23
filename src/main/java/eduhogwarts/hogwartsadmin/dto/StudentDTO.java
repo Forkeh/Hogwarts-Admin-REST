@@ -1,6 +1,9 @@
 package eduhogwarts.hogwartsadmin.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 
@@ -8,6 +11,7 @@ public class StudentDTO {
     private Long id;
     @NotBlank(message = "Name is required")
     private String name;
+    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
     @NotBlank(message = "House is required")
     private String house;
@@ -15,6 +19,8 @@ public class StudentDTO {
     private int enrollmentYear;
     private int graduationYear;
     private boolean graduated;
+    @Min(1)
+    @Max(7)
     private int schoolYear;
 
     public StudentDTO() {

@@ -15,8 +15,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+// TODO: Return Optional instead?
+// TODO: Exception handling
 @Service
 public class TeacherService {
 
@@ -34,8 +35,7 @@ public class TeacherService {
 
     public List<TeacherDTO> getAllTeachers() {
         return teacherRepository.findAll().
-                stream().map(modelMapper::teacherModelToDTO).
-                collect(Collectors.toList());
+                stream().map(modelMapper::teacherModelToDTO).toList();
     }
 
     public TeacherDTO getTeacherById(Long id) {

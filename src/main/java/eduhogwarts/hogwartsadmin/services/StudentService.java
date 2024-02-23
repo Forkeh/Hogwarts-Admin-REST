@@ -26,6 +26,8 @@ public class StudentService {
     private final Utilities utilities;
     private final ModelMapper modelMapper;
 
+    // TODO: Refactor exception handling
+
     public StudentService(StudentRepository studentRepository, CourseRepository courseRepository, Utilities utilities, ModelMapper modelMapper) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
@@ -37,7 +39,7 @@ public class StudentService {
         List<Student> students = studentRepository.findAll();
         return students.stream().
                 map(modelMapper::studentModelToDTO).
-                collect(Collectors.toList());
+                toList();
 
     }
 
@@ -52,7 +54,6 @@ public class StudentService {
 
         if (house == null) throw new RuntimeException("House not found with name: " + student.getHouse());
 
-
         Student newStudent = new Student(student.getName(), student.getDateOfBirth(), house, student.isPrefect(), student.getEnrollmentYear(), student.getGraduationYear(), student.isGraduated(), student.getSchoolYear());
 //        if (student.getFullName() != null) {
 //        } else {
@@ -66,6 +67,8 @@ public class StudentService {
         Optional<Student> original = studentRepository.findById(id);
         House house = utilities.getHouseFromString(student.getHouse());
 
+        // TODO: Move exception to here
+        // TODO: refactor to use existsById
         if (original.isPresent() && house != null) {
             Student updatedStudent = updateStudentFields(student, original.get(), house);
 
@@ -116,6 +119,7 @@ public class StudentService {
     public StudentDTO patchStudentFields(Long id, Map<String, Object> fields) {
         Optional<Student> student = studentRepository.findById(id);
 
+        // TODO: Move exception to here
         if (student.isPresent()) {
             // Loop through all fields
             fields.forEach((key, value) -> {
