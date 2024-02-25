@@ -4,7 +4,7 @@ Welcome to the Hogwarts Admin REST API! This API allows you to manage various as
 
 ## Deployment
 
-The API is deployed at [https://hogwarts-rest.azurewebsites.net/](https://hogwarts-rest.azurewebsites.net/).
+The API is deployed at [https://hogwarts-rest.azurewebsites.net/](https://hogwarts-rest.azurewebsites.net/)
 
 ## Resources
 
