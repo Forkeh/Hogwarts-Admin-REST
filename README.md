@@ -63,12 +63,3 @@ The `/house` resource allows you to retrieve information about Hogwarts houses.
 
 - `GET /house`: Get information about all Hogwarts houses.
 - `GET /house/{name}`: Get details of a specific Hogwarts house by name.
-
-## Usage
-
-To use the API, you can send HTTP requests to the specified endpoints using your preferred tool or programming language.
-
-Example using cURL to get all students:
-
-```bash
-curl https://hogwarts-rest.azurewebsites.net/students
