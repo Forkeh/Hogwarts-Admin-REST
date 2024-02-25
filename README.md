@@ -57,9 +57,9 @@ The `/courses` resource allows you to manage courses, including assigning teache
 
 ### House
 
-The `/house` resource allows you to retrieve information about Hogwarts houses.
+The `/houses` resource allows you to retrieve information about Hogwarts houses.
 
 #### Endpoints
 
-- `GET /house`: Get information about all Hogwarts houses.
-- `GET /house/{name}`: Get details of a specific Hogwarts house by name.
+- `GET /houses`: Get information about all Hogwarts houses.
+- `GET /houses/{name}`: Get details of a specific Hogwarts house by name.
